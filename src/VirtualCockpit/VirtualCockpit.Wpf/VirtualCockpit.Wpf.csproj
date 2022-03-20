@@ -115,7 +115,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)SimConnect.cfg" "." /Y
-xcopy "$(ProjectDir)..\..\SimConnect SDK\lib\SimConnect.dll" "." /Y
+xcopy "$(ProjectDir)..\..\..\lib\SimConnect.dll" "." /Y
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
