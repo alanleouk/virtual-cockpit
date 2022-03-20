@@ -30,9 +30,9 @@
 
     <Grid>
 
-        <Button x:Name="btn_Connection" Content="{Binding sConnectButtonLabel}" Command="{Binding cmdToggleConnect}" HorizontalAlignment="Left" Margin="29,68,0,0" VerticalAlignment="Top" Width="146" Height="48"/>
+        <Button x:Name="btn_Connection" Content="{Binding sConnectButtonLabel}" Command="{Binding cmdToggleConnect}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="146" Height="48"/>
 
-        <ListView x:Name="lv_Simvars" ItemsSource="{Binding lSimvarRequests}" SelectedItem="{Binding oSelectedSimvarRequest, Mode=OneWayToSource}" Margin="270,10,10,10">
+        <ListView x:Name="lv_Simvars" ItemsSource="{Binding lSimvarRequests}" SelectedItem="{Binding oSelectedSimvarRequest, Mode=OneWayToSource}" Margin="10,90,0,221" Width="236" HorizontalAlignment="Left">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Style.Triggers>
@@ -44,9 +44,9 @@
             </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Simvar" Width="200" DisplayMemberBinding="{Binding sName}"/>
-                    <GridViewColumn Header="Value" Width="150" DisplayMemberBinding="{Binding sValue}"/>
-                    <GridViewColumn Header="Units" Width="150" DisplayMemberBinding="{Binding sUnits}"/>
+                    <GridViewColumn Header="Simvar" Width="100" DisplayMemberBinding="{Binding sName}"/>
+                    <GridViewColumn Header="Value" Width="60" DisplayMemberBinding="{Binding sValue}"/>
+                    <GridViewColumn Header="Units" Width="60" DisplayMemberBinding="{Binding sUnits}"/>
                 </GridView>
             </ListView.View>
         </ListView>
@@ -70,9 +70,9 @@
             </Ellipse.Style>
         </Ellipse>
 
-        <Label Content="Errors" HorizontalAlignment="Left" Margin="10,454,0,0" VerticalAlignment="Top" Height="23" Width="83"/>
+        <Label Content="Errors" HorizontalAlignment="Left" Margin="10,0,0,193" VerticalAlignment="Bottom" Height="23" Width="83"/>
 
-        <ListBox ItemsSource="{Binding lErrorMessages}" RenderTransformOrigin="0.5,0.5" Width="236" HorizontalAlignment="Left" Margin="10,482,0,10">
+        <ListBox ItemsSource="{Binding lErrorMessages}" RenderTransformOrigin="0.5,0.5" Width="236" HorizontalAlignment="Left" Margin="10,482,0,10" Height="180" VerticalAlignment="Bottom">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Foreground" Value="Red"/>
@@ -85,9 +85,9 @@
             </ListBox.ItemsPanel>
         </ListBox>
 
-        <Label Content="Frequency" HorizontalAlignment="Left" Margin="183,61,0,0" VerticalAlignment="Top" Height="25"/>
-        <Slider x:Name="sl_Tick" Value="1000" Thumb.DragCompleted="Slider_DragCompleted" HorizontalAlignment="Left" Margin="183,86,0,0" VerticalAlignment="Top" Width="63" Minimum="100" Maximum="3000" LargeChange="100" SmallChange="10" IsDirectionReversed="True" />
-        <CheckBox Content="Use FSX-compatible configuration" IsChecked="{Binding bFSXcompatible, Mode=TwoWay}" HorizontalAlignment="Left" Margin="29,121,0,0" VerticalAlignment="Top" Width="217"/>
+        <Label Content="Frequency" HorizontalAlignment="Left" Margin="183,34,0,0" VerticalAlignment="Top" Height="25"/>
+        <Slider x:Name="sl_Tick" Value="1000" Thumb.DragCompleted="Slider_DragCompleted" HorizontalAlignment="Left" Margin="183,10,0,0" VerticalAlignment="Top" Width="63" Minimum="100" Maximum="3000" LargeChange="100" SmallChange="10" IsDirectionReversed="True" />
+        <CheckBox Content="Use FSX-compatible configuration" IsChecked="{Binding bFSXcompatible, Mode=TwoWay}" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top" Width="217"/>
 
     </Grid>
 
