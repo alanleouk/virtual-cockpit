@@ -257,6 +257,7 @@ namespace Simvars
 
                 /// Catch a simobject data request
                 m_oSimConnect.OnRecvSimobjectDataBytype += new SimConnect.RecvSimobjectDataBytypeEventHandler(SimConnect_OnRecvSimobjectDataBytype);
+                m_oSimConnect.OnRecvSimobjectData += new SimConnect.RecvSimobjectDataEventHandler(SimConnect_OnRecvSimobjectData);
             }
             catch (COMException ex)
             {
@@ -279,6 +280,7 @@ namespace Simvars
                 {
                     oSimvarRequest.bPending = !RegisterToSimConnect(oSimvarRequest);
                     oSimvarRequest.bStillPending = oSimvarRequest.bPending;
+                    m_oSimConnect?.RequestDataOnSimObject(oSimvarRequest.eRequest, oSimvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.SECOND, 0, 0, 0, 0);
                 }
             }
 
@@ -301,6 +303,40 @@ namespace Simvars
             Console.WriteLine("SimConnect_OnRecvException: " + eException.ToString());
 
             lErrorMessages.Add("SimConnect : " + eException.ToString());
+        }
+
+        private void SimConnect_OnRecvSimobjectData(SimConnect sender, SIMCONNECT_RECV_SIMOBJECT_DATA data)
+        {
+            Console.WriteLine("SimConnect_OnRecvSimobjectData");
+
+            uint iRequest = data.dwRequestID;
+            uint iObject = data.dwObjectID;
+            if (!lObjectIDs.Contains(iObject))
+            {
+                lObjectIDs.Add(iObject);
+            }
+            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
+            {
+                if (iRequest == (uint)oSimvarRequest.eRequest && (!bObjectIDSelectionEnabled || iObject == m_iObjectIdRequest))
+                {
+                    if (oSimvarRequest.bIsString)
+                    {
+                        Struct1 result = (Struct1)data.dwData[0];
+                        oSimvarRequest.dValue = 0;
+                        oSimvarRequest.sValue = result.sValue;
+                    }
+                    else
+                    {
+                        double dValue = (double)data.dwData[0];
+                        oSimvarRequest.dValue = dValue;
+                        oSimvarRequest.sValue = dValue.ToString("F9");
+
+                    }
+
+                    oSimvarRequest.bPending = false;
+                    oSimvarRequest.bStillPending = false;
+                }
+            }
         }
 
         private void SimConnect_OnRecvSimobjectDataBytype(SimConnect sender, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE data)
@@ -342,6 +378,7 @@ namespace Simvars
         private void OnTick(object sender, EventArgs e)
         {
             Console.WriteLine("OnTick");
+            return;
 
             bOddTick = !bOddTick;
 
