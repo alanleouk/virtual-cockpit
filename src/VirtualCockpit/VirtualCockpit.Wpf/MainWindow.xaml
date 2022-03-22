@@ -88,8 +88,8 @@
         <Label Content="Frequency" HorizontalAlignment="Left" Margin="183,34,0,0" VerticalAlignment="Top" Height="25"/>
         <Slider x:Name="sl_Tick" Value="1000" Thumb.DragCompleted="Slider_DragCompleted" HorizontalAlignment="Left" Margin="183,10,0,0" VerticalAlignment="Top" Width="63" Minimum="100" Maximum="3000" LargeChange="100" SmallChange="10" IsDirectionReversed="True" />
         <CheckBox Content="Use FSX-compatible configuration" IsChecked="{Binding bFSXcompatible, Mode=TwoWay}" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top" Width="217"/>
-        <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="300" Margin="654,111,0,0" RenderTransformOrigin="4.796,0.697" />
-        <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="300" Margin="678,111,0,0" RenderTransformOrigin="4.796,0.697" />
+        <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="300" Margin="654,111,0,0" RenderTransformOrigin="4.796,0.697" Minimum="0" Maximum="100" Value="{Binding GENERAL_ENG_THROTTLE_LEVER_POSITION_1, Mode=OneWay}" />
+        <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="300" Margin="678,111,0,0" RenderTransformOrigin="4.796,0.697" Minimum="0" Maximum="100" Value="{Binding GENERAL_ENG_THROTTLE_LEVER_POSITION_2, Mode=OneWay}" />
         <CheckBox Content="Lock" HorizontalAlignment="Left" Height="16" Margin="664,90,0,0" VerticalAlignment="Top" Width="64" />
         <Button Content="GND SPLRS ARMED" HorizontalAlignment="Left" Height="28" Margin="369,458,0,0" VerticalAlignment="Top" Width="126"/>
         <Button Content="RET" HorizontalAlignment="Left" Height="28" Margin="369,491,0,0" VerticalAlignment="Top" Width="126"/>
@@ -111,10 +111,10 @@
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ParkBrk}" Value="True">
+                        <DataTrigger Binding="{Binding BRAKE_PARKING_POSITION}" Value="True">
                             <Setter Property="Background" Value="LightGreen" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ParkBrk}" Value="False">
+                        <DataTrigger Binding="{Binding BRAKE_PARKING_POSITION}" Value="False">
                             <Setter Property="Background" Value="LightGray" />
                         </DataTrigger>
                     </Style.Triggers>

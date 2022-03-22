@@ -131,12 +131,26 @@ namespace Simvars
 
         #region My UI Bindings
 
-        public bool ParkBrk
+        public double GENERAL_ENG_THROTTLE_LEVER_POSITION_1
         {
-            get { return _ParkBrk; }
-            private set { SetProperty(ref _ParkBrk, value); }
+            get { return _GENERAL_ENG_THROTTLE_LEVER_POSITION_1; }
+            private set { SetProperty(ref _GENERAL_ENG_THROTTLE_LEVER_POSITION_1, value); }
         }
-        private bool _ParkBrk = true;
+        private double _GENERAL_ENG_THROTTLE_LEVER_POSITION_1 = 0;
+
+        public double GENERAL_ENG_THROTTLE_LEVER_POSITION_2
+        {
+            get { return _GENERAL_ENG_THROTTLE_LEVER_POSITION_2; }
+            private set { SetProperty(ref _GENERAL_ENG_THROTTLE_LEVER_POSITION_2, value); }
+        }
+        private double _GENERAL_ENG_THROTTLE_LEVER_POSITION_2 = 0;
+
+        public bool BRAKE_PARKING_POSITION
+        {
+            get { return _BRAKE_PARKING_POSITION; }
+            private set { SetProperty(ref _BRAKE_PARKING_POSITION, value); }
+        }
+        private bool _BRAKE_PARKING_POSITION = true;
 
         #endregion
 
@@ -326,6 +340,13 @@ namespace Simvars
             {
                 lObjectIDs.Add(iObject);
             }
+
+            double dValue = 0;
+            if (data.dwData.Length > 0)
+            {
+                dValue = (double)data.dwData[0];
+            }
+
             foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
             {
                 if (iRequest == (uint)oSimvarRequest.eRequest && (!bObjectIDSelectionEnabled || iObject == m_iObjectIdRequest))
@@ -338,7 +359,6 @@ namespace Simvars
                     }
                     else
                     {
-                        double dValue = (double)data.dwData[0];
                         oSimvarRequest.dValue = dValue;
                         oSimvarRequest.sValue = dValue.ToString("F9");
 
@@ -350,11 +370,44 @@ namespace Simvars
             }
 
             var request = lSimvarRequests[(int)data.dwRequestID];
+ 
+
             switch (request.sName)
             {
+                case "GENERAL ENG THROTTLE LEVER POSITION:1": // percent
+                    GENERAL_ENG_THROTTLE_LEVER_POSITION_1 = dValue;
+                    break;
+                case "GENERAL ENG THROTTLE LEVER POSITION:2": // percent
+                    GENERAL_ENG_THROTTLE_LEVER_POSITION_2 = dValue;
+                    break;
+                case "FLAPS HANDLE INDEX": // number
+                    break;
+                case "AILERON POSITION": // position
+                    break;
+                case "AILERON TRIM PCT": // percent
+                    break;
+                case "ELEVATOR POSITION": // position
+                    break;
+                case "ELEVATOR TRIM PCT": // percent
+                    break;
+                case "RUDDER POSITION": // position
+                    break;
+                case "RUDDER TRIM": // degrees
+                    break;
+                case "RUDDER TRIM PCT": // percent
+                    break;
                 case "BRAKE PARKING POSITION":
-                    double dValue = (double)data.dwData[0];
-                    ParkBrk = dValue == 1;
+                    BRAKE_PARKING_POSITION = (dValue == 1);
+                    break;
+                case "GEAR AUX POSITION": // percent
+                    break;
+                case "SPOILERS ARMED": // Bool
+                    break;
+                case "SPOILERS HANDLE POSITION": // percent
+                    break;
+                case "AUTOBRAKES ACTIVE": // Bool
+                    break;
+                case "AUTO BRAKE SWITCH CB": // number
                     break;
             }
         }
