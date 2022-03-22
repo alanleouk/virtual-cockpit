@@ -8,7 +8,7 @@
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="1006" MinWidth="800" MinHeight="700">
+        Title="MainWindow" Height="700" Width="1122" MinWidth="800" MinHeight="700">
 
     <Window.Resources>
         <ObjectDataProvider x:Key="SimObjectTypeFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
@@ -88,6 +88,40 @@
         <Label Content="Frequency" HorizontalAlignment="Left" Margin="183,34,0,0" VerticalAlignment="Top" Height="25"/>
         <Slider x:Name="sl_Tick" Value="1000" Thumb.DragCompleted="Slider_DragCompleted" HorizontalAlignment="Left" Margin="183,10,0,0" VerticalAlignment="Top" Width="63" Minimum="100" Maximum="3000" LargeChange="100" SmallChange="10" IsDirectionReversed="True" />
         <CheckBox Content="Use FSX-compatible configuration" IsChecked="{Binding bFSXcompatible, Mode=TwoWay}" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top" Width="217"/>
+        <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="300" Margin="654,111,0,0" RenderTransformOrigin="4.796,0.697" />
+        <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="300" Margin="678,111,0,0" RenderTransformOrigin="4.796,0.697" />
+        <CheckBox Content="Lock" HorizontalAlignment="Left" Height="16" Margin="664,90,0,0" VerticalAlignment="Top" Width="64" />
+        <Button Content="GND SPLRS ARMED" HorizontalAlignment="Left" Height="28" Margin="369,458,0,0" VerticalAlignment="Top" Width="126"/>
+        <Button Content="RET" HorizontalAlignment="Left" Height="28" Margin="369,491,0,0" VerticalAlignment="Top" Width="126"/>
+        <Button Content="1/4" HorizontalAlignment="Left" Height="28" Margin="369,524,0,0" VerticalAlignment="Top" Width="126"/>
+        <Button Content="1/2" HorizontalAlignment="Left" Height="28" Margin="369,557,0,0" VerticalAlignment="Top" Width="126"/>
+        <Button Content="3/4" HorizontalAlignment="Left" Height="28" Margin="369,590,0,0" VerticalAlignment="Top" Width="126"/>
+        <Button Content="FULL" HorizontalAlignment="Left" Height="28" Margin="369,623,0,0" VerticalAlignment="Top" Width="126"/>
+        <Label Content="SPEED &#xD;&#xA;BRAKE" HorizontalAlignment="Left" Margin="277,526,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.024,3.066" Height="58" Width="58"/>
+        <Label Content="FLAPS" HorizontalAlignment="Left" Margin="1010,511,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.024,3.066" Height="58" Width="58"/>
+        <Button Content="0" HorizontalAlignment="Left" Height="28" Margin="863,465,0,0" VerticalAlignment="Top" Width="126"/>
+        <Button Content="1" HorizontalAlignment="Left" Height="28" Margin="863,498,0,0" VerticalAlignment="Top" Width="126"/>
+        <Button Content="2" HorizontalAlignment="Left" Height="28" Margin="863,533,0,0" VerticalAlignment="Top" Width="126"/>
+        <Button Content="3L" HorizontalAlignment="Left" Height="28" Margin="863,566,0,0" VerticalAlignment="Top" Width="126"/>
+        <Button Content="FULL" HorizontalAlignment="Left" Height="28" Margin="863,599,0,0" VerticalAlignment="Top" Width="126"/>
+        <Label Content="RUD TRIM" HorizontalAlignment="Left" Margin="656,459,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.024,3.066" Height="28" Width="86"/>
+        <Button Content="NOSE&#xD;&#xA;L" HorizontalAlignment="Left" Height="42" Margin="631,493,0,0" VerticalAlignment="Top" Width="65"/>
+        <Button Content="NOSE&#xA;R" HorizontalAlignment="Left" Height="42" Margin="701,492,0,0" VerticalAlignment="Top" Width="65"/>
+        <Button Content="PARK BRK" HorizontalAlignment="Left" Height="42" Margin="645,570,0,0" VerticalAlignment="Top" Width="108">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ParkBrk}" Value="True">
+                            <Setter Property="Background" Value="LightGreen" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ParkBrk}" Value="False">
+                            <Setter Property="Background" Value="LightGray" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Label Content="VALUE" HorizontalAlignment="Left" Margin="565,499,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.024,3.066" Height="28" Width="50"/>
 
     </Grid>
 

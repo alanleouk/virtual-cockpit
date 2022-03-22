@@ -129,6 +129,17 @@ namespace Simvars
 
         #endregion
 
+        #region My UI Bindings
+
+        public bool ParkBrk
+        {
+            get { return _ParkBrk; }
+            private set { SetProperty(ref _ParkBrk, value); }
+        }
+        private bool _ParkBrk = true;
+
+        #endregion
+
         #region UI bindings
 
         public string sConnectButtonLabel
@@ -336,6 +347,15 @@ namespace Simvars
                     oSimvarRequest.bPending = false;
                     oSimvarRequest.bStillPending = false;
                 }
+            }
+
+            var request = lSimvarRequests[(int)data.dwRequestID];
+            switch (request.sName)
+            {
+                case "BRAKE PARKING POSITION":
+                    double dValue = (double)data.dwData[0];
+                    ParkBrk = dValue == 1;
+                    break;
             }
         }
 
