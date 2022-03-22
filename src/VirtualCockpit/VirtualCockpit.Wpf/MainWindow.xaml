@@ -8,7 +8,7 @@
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="800" MinWidth="800" MinHeight="700">
+        Title="MainWindow" Height="700" Width="1006" MinWidth="800" MinHeight="700">
 
     <Window.Resources>
         <ObjectDataProvider x:Key="SimObjectTypeFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">

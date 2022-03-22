@@ -280,7 +280,7 @@ namespace Simvars
                 {
                     oSimvarRequest.bPending = !RegisterToSimConnect(oSimvarRequest);
                     oSimvarRequest.bStillPending = oSimvarRequest.bPending;
-                    m_oSimConnect?.RequestDataOnSimObject(oSimvarRequest.eRequest, oSimvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.SECOND, 0, 0, 0, 0);
+                    m_oSimConnect?.RequestDataOnSimObject(oSimvarRequest.eRequest, oSimvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.SIM_FRAME, SIMCONNECT_DATA_REQUEST_FLAG.CHANGED, 0, 0, 0);
                 }
             }
 
