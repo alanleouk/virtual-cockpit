@@ -233,6 +233,24 @@
         <Button Content="FLX MCT" HorizontalAlignment="Left" Height="28" Margin="508,272,0,0" VerticalAlignment="Top" Width="126" IsEnabled="False"/>
         <Button Content="TD GA" HorizontalAlignment="Left" Height="28" Margin="508,239,0,0" VerticalAlignment="Top" Width="126" IsEnabled="False"/>
         <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="158" Margin="508,605,0,0" RenderTransformOrigin="4.796,0.697" Minimum="0" Maximum="100" Value="{Binding SPOILERS_HANDLE_POSITION, Mode=OneWay}" IsEnabled="False" />
+        <Button Content="GEAR" HorizontalAlignment="Left" Height="28" Margin="734,104,0,0" VerticalAlignment="Top" Width="126">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Background" Value="LightYellow" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding GEAR_POSITION}" Value="100">
+                            <Setter Property="Background" Value="LightGreen" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding GEAR_POSITION}" Value="0">
+                            <Setter Property="Background" Value="LightGray" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Label HorizontalAlignment="Left" Margin="865,106,0,0" VerticalAlignment="Top">
+            <TextBlock Text="{Binding GEAR_POSITION}" />
+        </Label>
 
     </Grid>
 

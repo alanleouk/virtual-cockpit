@@ -203,6 +203,13 @@ namespace Simvars
         }
         private int _FLAPS_HANDLE_INDEX = 0;
 
+        public int GEAR_POSITION
+        {
+            get { return _GEAR_POSITION; }
+            private set { SetProperty(ref _GEAR_POSITION, value); }
+        }
+        private int _GEAR_POSITION = 0;
+
         #endregion
 
         #region UI bindings
@@ -308,7 +315,9 @@ namespace Simvars
             AddRequest("RUDDER TRIM", "degrees", false);
             AddRequest("RUDDER TRIM PCT", "percent", false);
             AddRequest("BRAKE PARKING POSITION", "Bool", false);
-            AddRequest("GEAR AUX POSITION", "percent", false);
+            AddRequest("GEAR POSITION", "percent", false);
+            AddRequest("GEAR POSITION:1", "percent", false);
+            AddRequest("GEAR POSITION:2", "percent", false);
             AddRequest("SPOILERS ARMED", "Bool", false);
             AddRequest("SPOILERS HANDLE POSITION", "percent", false);
             AddRequest("AUTOBRAKES ACTIVE", "Bool", false);
@@ -451,7 +460,10 @@ namespace Simvars
                 case "BRAKE PARKING POSITION":
                     BRAKE_PARKING_POSITION = (dValue == 1);
                     break;
-                case "GEAR AUX POSITION": // percent
+                case "GEAR POSITION": // percent
+                case "GEAR POSITION:1": // percent
+                case "GEAR POSITION:2": // percent
+                    GEAR_POSITION = (int)dValue; // TODO: Account for all wheels
                     break;
                 case "SPOILERS ARMED": // Bool
                     SPOILERS_ARMED = (dValue == 1);
