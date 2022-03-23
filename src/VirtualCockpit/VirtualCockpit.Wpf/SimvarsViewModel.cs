@@ -122,7 +122,7 @@ namespace Simvars
             bConnected = false;
 
             // Set all requests as pending
-            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
+            foreach (SimvarRequest oSimvarRequest in SimvarRequests)
             {
                 oSimvarRequest.bPending = true;
                 oSimvarRequest.bStillPending = true;
@@ -252,7 +252,7 @@ namespace Simvars
         }
         private uint m_iObjectIdRequest = 0;
 
-        public ObservableCollection<SimvarRequest> lSimvarRequests { get; private set; }
+        public ObservableCollection<SimvarRequest> SimvarRequests { get; private set; }
         public SimvarRequest oSelectedSimvarRequest
         {
             get { return m_oSelectedSimvarRequest; }
@@ -285,7 +285,7 @@ namespace Simvars
             lObjectIDs = new ObservableCollection<uint>();
             lObjectIDs.Add(1);
 
-            lSimvarRequests = new ObservableCollection<SimvarRequest>();
+            SimvarRequests = new ObservableCollection<SimvarRequest>();
             lErrorMessages = new ObservableCollection<string>();
 
             cmdToggleConnect = new BaseCommand((p) => { ToggleConnect(); });
@@ -345,7 +345,7 @@ namespace Simvars
             bConnected = true;
 
             // Register pending requests
-            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
+            foreach (SimvarRequest oSimvarRequest in SimvarRequests)
             {
                 if (oSimvarRequest.bPending)
                 {
@@ -390,7 +390,7 @@ namespace Simvars
                 dValue = (double)data.dwData[0];
             }
 
-            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
+            foreach (SimvarRequest oSimvarRequest in SimvarRequests)
             {
                 if (iRequest == (uint)oSimvarRequest.eRequest && (!bObjectIDSelectionEnabled || iObject == m_iObjectIdRequest))
                 {
@@ -412,7 +412,7 @@ namespace Simvars
                 }
             }
 
-            var request = lSimvarRequests[(int)data.dwRequestID];
+            var request = SimvarRequests[(int)data.dwRequestID];
  
 
             switch (request.sName)
@@ -471,7 +471,7 @@ namespace Simvars
             {
                 lObjectIDs.Add(iObject);
             }
-            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
+            foreach (SimvarRequest oSimvarRequest in SimvarRequests)
             {
                 if (iRequest == (uint)oSimvarRequest.eRequest && (!bObjectIDSelectionEnabled || iObject == m_iObjectIdRequest))
                 {
@@ -516,7 +516,7 @@ namespace Simvars
 
         private void ClearResquestsPendingState()
         {
-            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
+            foreach (SimvarRequest oSimvarRequest in SimvarRequests)
             {
                 oSimvarRequest.bPending = false;
                 oSimvarRequest.bStillPending = false;
@@ -568,7 +568,7 @@ namespace Simvars
             oSimvarRequest.bPending = !RegisterToSimConnect(oSimvarRequest);
             oSimvarRequest.bStillPending = oSimvarRequest.bPending;
 
-            lSimvarRequests.Add(oSimvarRequest);
+            SimvarRequests.Add(oSimvarRequest);
 
             ++m_iCurrentDefinition;
             ++m_iCurrentRequest;
@@ -576,29 +576,34 @@ namespace Simvars
 
         private void RemoveSelectedRequest()
         {
-            lSimvarRequests.Remove(oSelectedSimvarRequest);
+            SimvarRequests.Remove(oSelectedSimvarRequest);
         }
 
-        private void TrySetValue(string value)
+        public void TrySetValue(string name, string value)
         {
             Console.WriteLine("TrySetValue");
 
-            if (m_oSelectedSimvarRequest != null && value != null)
+            // TODO: Make a dictionary!
+            foreach (SimvarRequest simvarRequest in SimvarRequests)
             {
-                if (!m_oSelectedSimvarRequest.bIsString) {
-                    double dValue = 0.0;
-                    if (double.TryParse(value, NumberStyles.Any, null, out dValue))
-                    {
-                        m_oSimConnect.SetDataOnSimObject(m_oSelectedSimvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_DATA_SET_FLAG.DEFAULT, dValue);
-                    }
-                }
-                else
+                if (simvarRequest.sName == name)
                 {
-                    Struct1 sValueStruct = new Struct1()
+                    if (!simvarRequest.bIsString)
                     {
-                        sValue = value
-                    };
-                    m_oSimConnect.SetDataOnSimObject(m_oSelectedSimvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_DATA_SET_FLAG.DEFAULT, sValueStruct);
+                        double dValue = 0.0;
+                        if (double.TryParse(value, NumberStyles.Any, null, out dValue))
+                        {
+                            m_oSimConnect.SetDataOnSimObject(simvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_DATA_SET_FLAG.DEFAULT, dValue);
+                        }
+                    }
+                    else
+                    {
+                        Struct1 sValueStruct = new Struct1()
+                        {
+                            sValue = value
+                        };
+                        m_oSimConnect.SetDataOnSimObject(simvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_DATA_SET_FLAG.DEFAULT, sValueStruct);
+                    }
                 }
             }
         }

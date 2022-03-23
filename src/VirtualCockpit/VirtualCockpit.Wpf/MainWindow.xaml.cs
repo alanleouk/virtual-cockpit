@@ -17,7 +17,7 @@ namespace Simvars
     {
         public MainWindow()
         {
-            this.DataContext = new SimvarsViewModel();
+            DataContext = new SimvarsViewModel();
 
             InitializeComponent();
         }
@@ -77,12 +77,12 @@ namespace Simvars
 
         private void BRAKE_PARKING_POSITION_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
 
         private void FLAPS_HANDLE_INDEX_0_Click(object sender, RoutedEventArgs e)
         {
-            
+            ((SimvarsViewModel)DataContext).TrySetValue("FLAPS HANDLE INDEX", "0");
         }
     }
 }

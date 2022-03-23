@@ -32,7 +32,7 @@
 
         <Button x:Name="btn_Connection" Content="{Binding sConnectButtonLabel}" Command="{Binding cmdToggleConnect}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="146" Height="48"/>
 
-        <ListView x:Name="lv_Simvars" ItemsSource="{Binding lSimvarRequests}" SelectedItem="{Binding oSelectedSimvarRequest, Mode=OneWayToSource}" Margin="10,90,0,221" Width="236" HorizontalAlignment="Left">
+        <ListView x:Name="lv_Simvars" ItemsSource="{Binding SimvarRequests}" SelectedItem="{Binding oSelectedSimvarRequest, Mode=OneWayToSource}" Margin="10,90,0,221" Width="236" HorizontalAlignment="Left">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Style.Triggers>
