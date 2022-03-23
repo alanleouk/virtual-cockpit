@@ -129,6 +129,89 @@ namespace Simvars
 
         #endregion
 
+        #region My UI Bindings
+
+        public double GENERAL_ENG_THROTTLE_LEVER_POSITION_1
+        {
+            get { return _GENERAL_ENG_THROTTLE_LEVER_POSITION_1; }
+            private set { SetProperty(ref _GENERAL_ENG_THROTTLE_LEVER_POSITION_1, value); }
+        }
+        private double _GENERAL_ENG_THROTTLE_LEVER_POSITION_1 = 0;
+
+        public double GENERAL_ENG_THROTTLE_LEVER_POSITION_2
+        {
+            get { return _GENERAL_ENG_THROTTLE_LEVER_POSITION_2; }
+            private set { SetProperty(ref _GENERAL_ENG_THROTTLE_LEVER_POSITION_2, value); }
+        }
+        private double _GENERAL_ENG_THROTTLE_LEVER_POSITION_2 = 0;
+
+        public bool BRAKE_PARKING_POSITION
+        {
+            get { return _BRAKE_PARKING_POSITION; }
+            private set { SetProperty(ref _BRAKE_PARKING_POSITION, value); }
+        }
+        private bool _BRAKE_PARKING_POSITION = true;
+
+        public bool SPOILERS_ARMED
+        {
+            get { return _SPOILERS_ARMED; }
+            private set { SetProperty(ref _SPOILERS_ARMED, value); }
+        }
+        private bool _SPOILERS_ARMED = true;
+
+        public double SPOILERS_HANDLE_POSITION
+        {
+            get { return _SPOILERS_HANDLE_POSITION; }
+            private set
+            {
+                if (value < 1)
+                {
+                    SPOILERS_HANDLE_NUMBER = 0;
+                }
+                else if (value < 33)
+                {
+                    SPOILERS_HANDLE_NUMBER = 1;
+                }
+                else if (value < 51)
+                {
+                    SPOILERS_HANDLE_NUMBER = 2;
+                }
+                else if (value < 69)
+                {
+                    SPOILERS_HANDLE_NUMBER = 3;
+                }
+                else
+                {
+                    SPOILERS_HANDLE_NUMBER = 4;
+                }
+                SetProperty(ref _SPOILERS_HANDLE_POSITION, value);
+            }
+        }
+        private double _SPOILERS_HANDLE_POSITION = 0;
+
+        public int SPOILERS_HANDLE_NUMBER
+        {
+            get { return _SPOILERS_HANDLE_NUMBER; }
+            private set { SetProperty(ref _SPOILERS_HANDLE_NUMBER, value); }
+        }
+        private int _SPOILERS_HANDLE_NUMBER = 0;
+
+        public int FLAPS_HANDLE_INDEX
+        {
+            get { return _FLAPS_HANDLE_INDEX; }
+            private set { SetProperty(ref _FLAPS_HANDLE_INDEX, value); }
+        }
+        private int _FLAPS_HANDLE_INDEX = 0;
+
+        public int GEAR_POSITION
+        {
+            get { return _GEAR_POSITION; }
+            private set { SetProperty(ref _GEAR_POSITION, value); }
+        }
+        private int _GEAR_POSITION = 0;
+
+        #endregion
+
         #region UI bindings
 
         public string sConnectButtonLabel
@@ -232,7 +315,9 @@ namespace Simvars
             AddRequest("RUDDER TRIM", "degrees", false);
             AddRequest("RUDDER TRIM PCT", "percent", false);
             AddRequest("BRAKE PARKING POSITION", "Bool", false);
-            AddRequest("GEAR AUX POSITION", "percent", false);
+            AddRequest("GEAR POSITION", "percent", false);
+            AddRequest("GEAR POSITION:1", "percent", false);
+            AddRequest("GEAR POSITION:2", "percent", false);
             AddRequest("SPOILERS ARMED", "Bool", false);
             AddRequest("SPOILERS HANDLE POSITION", "percent", false);
             AddRequest("AUTOBRAKES ACTIVE", "Bool", false);
@@ -280,7 +365,7 @@ namespace Simvars
                 {
                     oSimvarRequest.bPending = !RegisterToSimConnect(oSimvarRequest);
                     oSimvarRequest.bStillPending = oSimvarRequest.bPending;
-                    m_oSimConnect?.RequestDataOnSimObject(oSimvarRequest.eRequest, oSimvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.SECOND, 0, 0, 0, 0);
+                    m_oSimConnect?.RequestDataOnSimObject(oSimvarRequest.eRequest, oSimvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.SIM_FRAME, SIMCONNECT_DATA_REQUEST_FLAG.CHANGED, 0, 0, 0);
                 }
             }
 
@@ -315,6 +400,13 @@ namespace Simvars
             {
                 lObjectIDs.Add(iObject);
             }
+
+            double dValue = 0;
+            if (data.dwData.Length > 0)
+            {
+                dValue = (double)data.dwData[0];
+            }
+
             foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
             {
                 if (iRequest == (uint)oSimvarRequest.eRequest && (!bObjectIDSelectionEnabled || iObject == m_iObjectIdRequest))
@@ -327,7 +419,6 @@ namespace Simvars
                     }
                     else
                     {
-                        double dValue = (double)data.dwData[0];
                         oSimvarRequest.dValue = dValue;
                         oSimvarRequest.sValue = dValue.ToString("F9");
 
@@ -336,6 +427,54 @@ namespace Simvars
                     oSimvarRequest.bPending = false;
                     oSimvarRequest.bStillPending = false;
                 }
+            }
+
+            var request = lSimvarRequests[(int)data.dwRequestID];
+ 
+
+            switch (request.sName)
+            {
+                case "GENERAL ENG THROTTLE LEVER POSITION:1": // percent
+                    GENERAL_ENG_THROTTLE_LEVER_POSITION_1 = dValue;
+                    break;
+                case "GENERAL ENG THROTTLE LEVER POSITION:2": // percent
+                    GENERAL_ENG_THROTTLE_LEVER_POSITION_2 = dValue;
+                    break;
+                case "FLAPS HANDLE INDEX": // number
+                    FLAPS_HANDLE_INDEX = (int)dValue;
+                    break;
+                case "AILERON POSITION": // position
+                    break;
+                case "AILERON TRIM PCT": // percent
+                    break;
+                case "ELEVATOR POSITION": // position
+                    break;
+                case "ELEVATOR TRIM PCT": // percent
+                    break;
+                case "RUDDER POSITION": // position
+                    break;
+                case "RUDDER TRIM": // degrees
+                    break;
+                case "RUDDER TRIM PCT": // percent
+                    break;
+                case "BRAKE PARKING POSITION":
+                    BRAKE_PARKING_POSITION = (dValue == 1);
+                    break;
+                case "GEAR POSITION": // percent
+                case "GEAR POSITION:1": // percent
+                case "GEAR POSITION:2": // percent
+                    GEAR_POSITION = (int)dValue; // TODO: Account for all wheels
+                    break;
+                case "SPOILERS ARMED": // Bool
+                    SPOILERS_ARMED = (dValue == 1);
+                    break;
+                case "SPOILERS HANDLE POSITION": // percent
+                    SPOILERS_HANDLE_POSITION = dValue;
+                    break;
+                case "AUTOBRAKES ACTIVE": // Bool
+                    break;
+                case "AUTO BRAKE SWITCH CB": // number
+                    break;
             }
         }
 
