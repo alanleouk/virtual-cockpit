@@ -106,8 +106,10 @@ namespace Simvars
         {
             Console.WriteLine("Disconnect");
 
+            /*
             m_oTimer.Stop();
             bOddTick = false;
+            */
 
             if (m_oSimConnect != null)
             {
@@ -271,23 +273,10 @@ namespace Simvars
         }
         private bool m_bIsString = false;
 
-        public bool bOddTick
-        {
-            get { return m_bOddTick; }
-            set { this.SetProperty(ref m_bOddTick, value); }
-        }
-        private bool m_bOddTick = false;
-
         public ObservableCollection<string> lErrorMessages { get; private set; }
 
 
         public BaseCommand cmdToggleConnect { get; private set; }
-
-        #endregion
-
-        #region Real time
-
-        private DispatcherTimer m_oTimer = new DispatcherTimer();
 
         #endregion
 
@@ -300,9 +289,6 @@ namespace Simvars
             lErrorMessages = new ObservableCollection<string>();
 
             cmdToggleConnect = new BaseCommand((p) => { ToggleConnect(); });
-
-            m_oTimer.Interval = new TimeSpan(0, 0, 0, 1, 0);
-            m_oTimer.Tick += new EventHandler(OnTick);
 
             AddRequest("GENERAL ENG THROTTLE LEVER POSITION:1", "percent", false);
             AddRequest("GENERAL ENG THROTTLE LEVER POSITION:2", "percent", false);
@@ -368,9 +354,6 @@ namespace Simvars
                     m_oSimConnect?.RequestDataOnSimObject(oSimvarRequest.eRequest, oSimvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.SIM_FRAME, SIMCONNECT_DATA_REQUEST_FLAG.CHANGED, 0, 0, 0);
                 }
             }
-
-            m_oTimer.Start();
-            bOddTick = false;
         }
 
         /// The case where the user closes game
@@ -512,29 +495,6 @@ namespace Simvars
             }
         }
 
-        // May not be the best way to achive regular requests.
-        // See SimConnect.RequestDataOnSimObject
-        private void OnTick(object sender, EventArgs e)
-        {
-            Console.WriteLine("OnTick");
-            return;
-
-            bOddTick = !bOddTick;
-
-            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
-            {
-                if (!oSimvarRequest.bPending)
-                {
-                    m_oSimConnect?.RequestDataOnSimObjectType(oSimvarRequest.eRequest, oSimvarRequest.eDef, 0, m_eSimObjectType);
-                    oSimvarRequest.bPending = true;
-                }
-                else
-                {
-                    oSimvarRequest.bStillPending = true;
-                }
-            }
-        }
-
         private void ToggleConnect()
         {
             if (m_oSimConnect == null)
@@ -596,8 +556,6 @@ namespace Simvars
         {
             Console.WriteLine("AddRequest");
 
-            //string sNewSimvarRequest = _sOverrideSimvarRequest != null ? _sOverrideSimvarRequest : ((m_iIndexRequest == 0) ? m_sSimvarRequest : (m_sSimvarRequest + ":" + m_iIndexRequest));
-            //string sNewUnitRequest = _sOverrideUnitRequest != null ? _sOverrideUnitRequest : m_sUnitRequest;
             SimvarRequest oSimvarRequest = new SimvarRequest
             {
                 eDef = (DEFINITION)m_iCurrentDefinition,
@@ -643,11 +601,6 @@ namespace Simvars
                     m_oSimConnect.SetDataOnSimObject(m_oSelectedSimvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_DATA_SET_FLAG.DEFAULT, sValueStruct);
                 }
             }
-        }
-
-        public void SetTickSliderValue(int _iValue)
-        {
-            m_oTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)(_iValue));
         }
     }
 }

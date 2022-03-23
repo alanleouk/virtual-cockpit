@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Navigation;
@@ -33,7 +31,7 @@ namespace Simvars
         {
             base.OnSourceInitialized(e);
             GetHWinSource().AddHook(WndProc);
-            if (this.DataContext is IBaseSimConnectWrapper oBaseSimConnectWrapper)
+            if (DataContext is IBaseSimConnectWrapper oBaseSimConnectWrapper)
             {
                 oBaseSimConnectWrapper.SetWindowHandle(GetHWinSource().Handle);
             }
@@ -41,7 +39,7 @@ namespace Simvars
 
         private IntPtr WndProc(IntPtr hWnd, int iMsg, IntPtr hWParam, IntPtr hLParam, ref bool bHandled)
         {
-            if (this.DataContext is IBaseSimConnectWrapper oBaseSimConnectWrapper)
+            if (DataContext is IBaseSimConnectWrapper oBaseSimConnectWrapper)
             {
                 try
                 {
@@ -77,12 +75,14 @@ namespace Simvars
             }
         }
 
-        private void Slider_DragCompleted(object sender, DragCompletedEventArgs e)
+        private void BRAKE_PARKING_POSITION_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Slider oSlider && this.DataContext is SimvarsViewModel oContext)
-            {
-                oContext.SetTickSliderValue((int)oSlider.Value);
-            }
+
+        }
+
+        private void FLAPS_HANDLE_INDEX_0_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }
