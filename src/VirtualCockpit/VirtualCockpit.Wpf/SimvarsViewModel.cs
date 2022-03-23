@@ -152,6 +152,57 @@ namespace Simvars
         }
         private bool _BRAKE_PARKING_POSITION = true;
 
+        public bool SPOILERS_ARMED
+        {
+            get { return _SPOILERS_ARMED; }
+            private set { SetProperty(ref _SPOILERS_ARMED, value); }
+        }
+        private bool _SPOILERS_ARMED = true;
+
+        public double SPOILERS_HANDLE_POSITION
+        {
+            get { return _SPOILERS_HANDLE_POSITION; }
+            private set
+            {
+                if (value < 1)
+                {
+                    SPOILERS_HANDLE_NUMBER = 0;
+                }
+                else if (value < 33)
+                {
+                    SPOILERS_HANDLE_NUMBER = 1;
+                }
+                else if (value < 51)
+                {
+                    SPOILERS_HANDLE_NUMBER = 2;
+                }
+                else if (value < 69)
+                {
+                    SPOILERS_HANDLE_NUMBER = 3;
+                }
+                else
+                {
+                    SPOILERS_HANDLE_NUMBER = 4;
+                }
+                SetProperty(ref _SPOILERS_HANDLE_POSITION, value);
+            }
+        }
+        private double _SPOILERS_HANDLE_POSITION = 0;
+
+        public int SPOILERS_HANDLE_NUMBER
+        {
+            get { return _SPOILERS_HANDLE_NUMBER; }
+            private set { SetProperty(ref _SPOILERS_HANDLE_NUMBER, value); }
+        }
+        private int _SPOILERS_HANDLE_NUMBER = 0;
+
+        public int FLAPS_HANDLE_INDEX
+        {
+            get { return _FLAPS_HANDLE_INDEX; }
+            private set { SetProperty(ref _FLAPS_HANDLE_INDEX, value); }
+        }
+        private int _FLAPS_HANDLE_INDEX = 0;
+
         #endregion
 
         #region UI bindings
@@ -381,6 +432,7 @@ namespace Simvars
                     GENERAL_ENG_THROTTLE_LEVER_POSITION_2 = dValue;
                     break;
                 case "FLAPS HANDLE INDEX": // number
+                    FLAPS_HANDLE_INDEX = (int)dValue;
                     break;
                 case "AILERON POSITION": // position
                     break;
@@ -402,8 +454,10 @@ namespace Simvars
                 case "GEAR AUX POSITION": // percent
                     break;
                 case "SPOILERS ARMED": // Bool
+                    SPOILERS_ARMED = (dValue == 1);
                     break;
                 case "SPOILERS HANDLE POSITION": // percent
+                    SPOILERS_HANDLE_POSITION = dValue;
                     break;
                 case "AUTOBRAKES ACTIVE": // Bool
                     break;
