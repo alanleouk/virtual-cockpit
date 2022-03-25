@@ -443,9 +443,9 @@ namespace Simvars
                 case "BRAKE PARKING POSITION":
                     BRAKE_PARKING_POSITION = (dValue == 1);
                     break;
-                case "GEAR POSITION": // percent
-                case "GEAR POSITION:1": // percent
-                case "GEAR POSITION:2": // percent
+                case "GEAR POSITION": // percent // Enum // 0 = unknown; 1 = up; 2 = down
+                case "GEAR POSITION:1":
+                case "GEAR POSITION:2":
                     GEAR_POSITION = (int)dValue; // TODO: Account for all wheels
                     break;
                 case "SPOILERS ARMED": // Bool
