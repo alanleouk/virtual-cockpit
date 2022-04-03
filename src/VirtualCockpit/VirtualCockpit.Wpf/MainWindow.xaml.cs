@@ -142,5 +142,20 @@ namespace Simvars
             Model.TrySetValue("GENERAL ENG THROTTLE LEVER POSITION:1", "89");
             Model.TrySetValue("GENERAL ENG THROTTLE LEVER POSITION:2", "89");
         }
+
+        private void NOSE_L_Click(object sender, RoutedEventArgs e)
+        {
+            Model.TrySetValue("RUDDER TRIM PCT", (Model.RUDDER_TRIM_PCT - 1).ToString());
+        }
+
+        private void NOSE_R_Click(object sender, RoutedEventArgs e)
+        {
+            Model.TrySetValue("RUDDER TRIM PCT", (Model.RUDDER_TRIM_PCT + 1).ToString());
+        }
+
+        private void RUDDER_RESET(object sender, RoutedEventArgs e)
+        {
+            Model.TrySetValue("RUDDER TRIM PCT", "0");
+        }
     }
 }

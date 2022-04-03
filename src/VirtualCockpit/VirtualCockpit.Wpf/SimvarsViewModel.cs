@@ -212,6 +212,66 @@ namespace Simvars
         }
         private int _GEAR_POSITION = 0;
 
+        public double RUDDER_POSITION
+        {
+            get { return _RUDDER_POSITION; }
+            private set { SetProperty(ref _RUDDER_POSITION, value); }
+        }
+        private double _RUDDER_POSITION = 0;
+
+        public double RUDDER_TRIM
+        {
+            get { return _RUDDER_TRIM; }
+            private set { SetProperty(ref _RUDDER_TRIM, value); }
+        }
+        private double _RUDDER_TRIM = 0;
+
+        public double RUDDER_TRIM_PCT
+        {
+            get { return _RUDDER_TRIM_PCT; }
+            private set { SetProperty(ref _RUDDER_TRIM_PCT, value); }
+        }
+        private double _RUDDER_TRIM_PCT = 0;
+
+
+
+
+        /*
+        public bool AUTOPILOT_AIRSPEED_HOLD
+        {
+            get { return _AUTOPILOT_AIRSPEED_HOLD; }
+            private set { SetProperty(ref _AUTOPILOT_AIRSPEED_HOLD, value); }
+        }
+        private bool _AUTOPILOT_AIRSPEED_HOLD = true;
+
+        public bool SPOILERS_ARMED
+        {
+            get { return _SPOILERS_ARMED; }
+            private set { SetProperty(ref _SPOILERS_ARMED, value); }
+        }
+        private bool _SPOILERS_ARMED = true;
+
+        public bool SPOILERS_ARMED
+        {
+            get { return _SPOILERS_ARMED; }
+            private set { SetProperty(ref _SPOILERS_ARMED, value); }
+        }
+        private bool _SPOILERS_ARMED = true;
+
+        public bool SPOILERS_ARMED
+        {
+            get { return _SPOILERS_ARMED; }
+            private set { SetProperty(ref _SPOILERS_ARMED, value); }
+        }
+        private bool _SPOILERS_ARMED = true;
+
+        public bool SPOILERS_ARMED
+        {
+            get { return _SPOILERS_ARMED; }
+            private set { SetProperty(ref _SPOILERS_ARMED, value); }
+        }
+        private bool _SPOILERS_ARMED = true;
+        */
         #endregion
 
         #region UI bindings
@@ -308,6 +368,25 @@ namespace Simvars
             AddRequest("SPOILERS HANDLE POSITION", "percent", false);
             AddRequest("AUTOBRAKES ACTIVE", "Bool", false);
             AddRequest("AUTO BRAKE SWITCH CB", "number", false);
+            AddRequest("AUTOPILOT FLIGHT DIRECTOR ACTIVE", "Bool", false);
+            AddRequest("AUTOPILOT AIRSPEED HOLD", "Bool", false);
+            AddRequest("AUTOPILOT AIRSPEED HOLD VAR", "Knots", false);
+            AddRequest("AUTOPILOT ALTITUDE LOCK", "Bool", false);
+            AddRequest("AUTOPILOT ALTITUDE LOCK VAR", "Feet", false);
+            AddRequest("AUTOPILOT APPROACH HOLD", "Bool", false);
+            // AddRequest("AUTOPILOT ATTITUDE HOLD", "Bool", false);
+            // AddRequest("AUTOPILOT BANK HOLD", "Bool", false);
+            // AddRequest("AUTOPILOT BANK HOLD REF", "Degrees", false);
+            AddRequest("AUTOPILOT GLIDESLOPE HOLD", "Bool", false);
+            AddRequest("AUTOPILOT MACH HOLD", "Bool", false);
+            AddRequest("AUTOPILOT MACH HOLD VAR", "Number", false);
+            // AddRequest("AUTOPILOT PITCH HOLD", "Bool", false);
+            // AddRequest("AUTOPILOT PITCH HOLD REF", "Radians", false);
+            // AddRequest("AUTOPILOT RPM HOLD", "Bool", false);
+            // AddRequest("AUTOPILOT RPM HOLD VAR", "Number", false);
+            AddRequest("AUTOPILOT VERTICAL HOLD", "Bool", false);
+            AddRequest("AUTOPILOT VERTICAL HOLD VAR", "feet per minute", false);
+            AddRequest("AUTOPILOT MANAGED THROTTLE ACTIVE", "Bool", false);  
         }
 
         private void Connect()
@@ -435,10 +514,13 @@ namespace Simvars
                 case "ELEVATOR TRIM PCT": // percent
                     break;
                 case "RUDDER POSITION": // position
+                    RUDDER_POSITION = dValue;
                     break;
                 case "RUDDER TRIM": // degrees
+                    RUDDER_TRIM = dValue;
                     break;
                 case "RUDDER TRIM PCT": // percent
+                    RUDDER_TRIM_PCT = dValue;
                     break;
                 case "BRAKE PARKING POSITION":
                     BRAKE_PARKING_POSITION = (dValue == 1);
