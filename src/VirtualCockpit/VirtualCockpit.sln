@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualCockpit.Wpf", "VirtualCockpit.Wpf\VirtualCockpit.Wpf.csproj", "{AE5B4E28-2877-410C-A5EC-A828E3F3BFC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualCockpit.Socks", "VirtualCockpit.Socks\VirtualCockpit.Socks.csproj", "{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualCockpit.Socks", "VirtualCockpit.Socks\VirtualCockpit.Socks.csproj", "{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualCockpit.Lib", "VirtualCockpit.Lib\VirtualCockpit.Lib.csproj", "{96848221-79E9-4DB2-9320-D765B2AF3326}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualCockpit.Lib", "VirtualCockpit.Lib\VirtualCockpit.Lib.csproj", "{96848221-79E9-4DB2-9320-D765B2AF3326}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualCockpit.SocksForms", "VirtualCockpit.SocksForms\VirtualCockpit.SocksForms.csproj", "{40C83B7A-9D74-46B0-A895-2954FAF76E0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualCockpit.SocksForms", "VirtualCockpit.SocksForms\VirtualCockpit.SocksForms.csproj", "{40C83B7A-9D74-46B0-A895-2954FAF76E0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +17,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AE5B4E28-2877-410C-A5EC-A828E3F3BFC1}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{AE5B4E28-2877-410C-A5EC-A828E3F3BFC1}.Debug|Any CPU.Build.0 = Debug|x64
-		{AE5B4E28-2877-410C-A5EC-A828E3F3BFC1}.Debug|x64.ActiveCfg = Debug|x64
-		{AE5B4E28-2877-410C-A5EC-A828E3F3BFC1}.Debug|x64.Build.0 = Debug|x64
-		{AE5B4E28-2877-410C-A5EC-A828E3F3BFC1}.Release|Any CPU.ActiveCfg = Release|x64
-		{AE5B4E28-2877-410C-A5EC-A828E3F3BFC1}.Release|Any CPU.Build.0 = Release|x64
-		{AE5B4E28-2877-410C-A5EC-A828E3F3BFC1}.Release|x64.ActiveCfg = Release|x64
-		{AE5B4E28-2877-410C-A5EC-A828E3F3BFC1}.Release|x64.Build.0 = Release|x64
 		{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}.Debug|x64.ActiveCfg = Debug|Any CPU
