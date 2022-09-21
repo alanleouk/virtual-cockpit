@@ -25,12 +25,14 @@ public partial class MainForm : Form
         _simConnectService.MessageReceivedEvent += SimConnectServiceOnMessageReceivedEvent;
         _simConnectService.SetWindowHandle(Handle);
 
+        /*
         // _simConnectService.AddRequest(ParamaterType.SimVar, "GENERAL ENG THROTTLE LEVER POSITION:1", "percent", 0);
         // _simConnectService.AddRequest(ParamaterType.SimVar, "GENERAL ENG THROTTLE LEVER POSITION:2", "percent", 0);
         _simConnectService.Add(ParamaterType.SimVar, "FLAPS HANDLE INDEX", "number", 0);
         _simConnectService.Add(ParamaterType.LVar, "A32NX_FLAPS_HANDLE_INDEX", "number", 0);
         // _simConnectService.AddRequest(ParamaterType.SimVar, "RUDDER POSITION", "position", 2);
         _simConnectService.Connect();
+        */
     }
 
     private void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
