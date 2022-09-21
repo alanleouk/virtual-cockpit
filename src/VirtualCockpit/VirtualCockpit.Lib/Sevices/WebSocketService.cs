@@ -33,11 +33,9 @@ namespace VirtualCockpit.Lib.Sevices
                 
                 while (true)
                 {
-                    var response = new { TimeOfDay = DateTime.UtcNow };
-                    var responseString = JsonSerializer.Serialize(response, _jsonSerializerOptions);
-
-                    await webSocket.SendAsync(Encoding.ASCII.GetBytes(responseString), WebSocketMessageType.Text, true,
-                        CancellationToken.None);
+                    // var response = new { TimeOfDay = DateTime.UtcNow };
+                    // var responseString = JsonSerializer.Serialize(response, _jsonSerializerOptions);
+                    // await webSocket.SendAsync(Encoding.ASCII.GetBytes(responseString), WebSocketMessageType.Text, true, CancellationToken.None);
                     await Task.Delay(1000);
                 }
                 

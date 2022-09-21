@@ -10,32 +10,35 @@ namespace VirtualCockpit.Lib.Models
     public enum REQUEST
     {
         Dummy = 0,
-        Struct1
+        String256
     };
 
-    // String properties must be packed inside of a struct
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
-    struct Struct1
+    public enum EVENT
     {
-        // this is how you declare a fixed size string
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-        public String sValue;
+        Dummy = 0,
+    }
 
-        // other definitions can be added to this struct
-        // ...
-    };
+    // Currently we only work with strings with a fixed size of 256
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 1)]
+    public struct String256
+    {
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
+        public string Value;
+    }
 
     public class SimvarRequest
     {
-        public DEFINITION eDef = DEFINITION.Dummy;
-        public REQUEST eRequest = REQUEST.Dummy;
+        public DEFINITION DefinitionId = DEFINITION.Dummy;
+        public REQUEST RequestId = REQUEST.Dummy;
 
+        public ParamaterType ParamaterType { get; set; }
         public string Name { get; set; }
         public decimal ValueAsDecimal { get; set; }
         public string ValueAsString { get; set; }
+        public object ValueAsObject { get; set; }
         public string Units { get; set; }
         public bool Pending = true;
-        public bool StillPending { get; set; }
         public int Precision { get; set; }
+        public bool Registered { get; set; }
     };
 }
