@@ -106,8 +106,10 @@ namespace Simvars
         {
             Console.WriteLine("Disconnect");
 
+            /*
             m_oTimer.Stop();
             bOddTick = false;
+            */
 
             if (m_oSimConnect != null)
             {
@@ -120,7 +122,7 @@ namespace Simvars
             bConnected = false;
 
             // Set all requests as pending
-            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
+            foreach (SimvarRequest oSimvarRequest in SimvarRequests)
             {
                 oSimvarRequest.bPending = true;
                 oSimvarRequest.bStillPending = true;
@@ -210,6 +212,66 @@ namespace Simvars
         }
         private int _GEAR_POSITION = 0;
 
+        public double RUDDER_POSITION
+        {
+            get { return _RUDDER_POSITION; }
+            private set { SetProperty(ref _RUDDER_POSITION, value); }
+        }
+        private double _RUDDER_POSITION = 0;
+
+        public double RUDDER_TRIM
+        {
+            get { return _RUDDER_TRIM; }
+            private set { SetProperty(ref _RUDDER_TRIM, value); }
+        }
+        private double _RUDDER_TRIM = 0;
+
+        public double RUDDER_TRIM_PCT
+        {
+            get { return _RUDDER_TRIM_PCT; }
+            private set { SetProperty(ref _RUDDER_TRIM_PCT, value); }
+        }
+        private double _RUDDER_TRIM_PCT = 0;
+
+
+
+
+        /*
+        public bool AUTOPILOT_AIRSPEED_HOLD
+        {
+            get { return _AUTOPILOT_AIRSPEED_HOLD; }
+            private set { SetProperty(ref _AUTOPILOT_AIRSPEED_HOLD, value); }
+        }
+        private bool _AUTOPILOT_AIRSPEED_HOLD = true;
+
+        public bool SPOILERS_ARMED
+        {
+            get { return _SPOILERS_ARMED; }
+            private set { SetProperty(ref _SPOILERS_ARMED, value); }
+        }
+        private bool _SPOILERS_ARMED = true;
+
+        public bool SPOILERS_ARMED
+        {
+            get { return _SPOILERS_ARMED; }
+            private set { SetProperty(ref _SPOILERS_ARMED, value); }
+        }
+        private bool _SPOILERS_ARMED = true;
+
+        public bool SPOILERS_ARMED
+        {
+            get { return _SPOILERS_ARMED; }
+            private set { SetProperty(ref _SPOILERS_ARMED, value); }
+        }
+        private bool _SPOILERS_ARMED = true;
+
+        public bool SPOILERS_ARMED
+        {
+            get { return _SPOILERS_ARMED; }
+            private set { SetProperty(ref _SPOILERS_ARMED, value); }
+        }
+        private bool _SPOILERS_ARMED = true;
+        */
         #endregion
 
         #region UI bindings
@@ -250,7 +312,7 @@ namespace Simvars
         }
         private uint m_iObjectIdRequest = 0;
 
-        public ObservableCollection<SimvarRequest> lSimvarRequests { get; private set; }
+        public ObservableCollection<SimvarRequest> SimvarRequests { get; private set; }
         public SimvarRequest oSelectedSimvarRequest
         {
             get { return m_oSelectedSimvarRequest; }
@@ -271,23 +333,10 @@ namespace Simvars
         }
         private bool m_bIsString = false;
 
-        public bool bOddTick
-        {
-            get { return m_bOddTick; }
-            set { this.SetProperty(ref m_bOddTick, value); }
-        }
-        private bool m_bOddTick = false;
-
         public ObservableCollection<string> lErrorMessages { get; private set; }
 
 
         public BaseCommand cmdToggleConnect { get; private set; }
-
-        #endregion
-
-        #region Real time
-
-        private DispatcherTimer m_oTimer = new DispatcherTimer();
 
         #endregion
 
@@ -296,13 +345,10 @@ namespace Simvars
             lObjectIDs = new ObservableCollection<uint>();
             lObjectIDs.Add(1);
 
-            lSimvarRequests = new ObservableCollection<SimvarRequest>();
+            SimvarRequests = new ObservableCollection<SimvarRequest>();
             lErrorMessages = new ObservableCollection<string>();
 
             cmdToggleConnect = new BaseCommand((p) => { ToggleConnect(); });
-
-            m_oTimer.Interval = new TimeSpan(0, 0, 0, 1, 0);
-            m_oTimer.Tick += new EventHandler(OnTick);
 
             AddRequest("GENERAL ENG THROTTLE LEVER POSITION:1", "percent", false);
             AddRequest("GENERAL ENG THROTTLE LEVER POSITION:2", "percent", false);
@@ -322,6 +368,25 @@ namespace Simvars
             AddRequest("SPOILERS HANDLE POSITION", "percent", false);
             AddRequest("AUTOBRAKES ACTIVE", "Bool", false);
             AddRequest("AUTO BRAKE SWITCH CB", "number", false);
+            AddRequest("AUTOPILOT FLIGHT DIRECTOR ACTIVE", "Bool", false);
+            AddRequest("AUTOPILOT AIRSPEED HOLD", "Bool", false);
+            AddRequest("AUTOPILOT AIRSPEED HOLD VAR", "Knots", false);
+            AddRequest("AUTOPILOT ALTITUDE LOCK", "Bool", false);
+            AddRequest("AUTOPILOT ALTITUDE LOCK VAR", "Feet", false);
+            AddRequest("AUTOPILOT APPROACH HOLD", "Bool", false);
+            // AddRequest("AUTOPILOT ATTITUDE HOLD", "Bool", false);
+            // AddRequest("AUTOPILOT BANK HOLD", "Bool", false);
+            // AddRequest("AUTOPILOT BANK HOLD REF", "Degrees", false);
+            AddRequest("AUTOPILOT GLIDESLOPE HOLD", "Bool", false);
+            AddRequest("AUTOPILOT MACH HOLD", "Bool", false);
+            AddRequest("AUTOPILOT MACH HOLD VAR", "Number", false);
+            // AddRequest("AUTOPILOT PITCH HOLD", "Bool", false);
+            // AddRequest("AUTOPILOT PITCH HOLD REF", "Radians", false);
+            // AddRequest("AUTOPILOT RPM HOLD", "Bool", false);
+            // AddRequest("AUTOPILOT RPM HOLD VAR", "Number", false);
+            AddRequest("AUTOPILOT VERTICAL HOLD", "Bool", false);
+            AddRequest("AUTOPILOT VERTICAL HOLD VAR", "feet per minute", false);
+            AddRequest("AUTOPILOT MANAGED THROTTLE ACTIVE", "Bool", false);  
         }
 
         private void Connect()
@@ -359,7 +424,7 @@ namespace Simvars
             bConnected = true;
 
             // Register pending requests
-            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
+            foreach (SimvarRequest oSimvarRequest in SimvarRequests)
             {
                 if (oSimvarRequest.bPending)
                 {
@@ -368,9 +433,6 @@ namespace Simvars
                     m_oSimConnect?.RequestDataOnSimObject(oSimvarRequest.eRequest, oSimvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.SIM_FRAME, SIMCONNECT_DATA_REQUEST_FLAG.CHANGED, 0, 0, 0);
                 }
             }
-
-            m_oTimer.Start();
-            bOddTick = false;
         }
 
         /// The case where the user closes game
@@ -407,7 +469,7 @@ namespace Simvars
                 dValue = (double)data.dwData[0];
             }
 
-            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
+            foreach (SimvarRequest oSimvarRequest in SimvarRequests)
             {
                 if (iRequest == (uint)oSimvarRequest.eRequest && (!bObjectIDSelectionEnabled || iObject == m_iObjectIdRequest))
                 {
@@ -429,7 +491,7 @@ namespace Simvars
                 }
             }
 
-            var request = lSimvarRequests[(int)data.dwRequestID];
+            var request = SimvarRequests[(int)data.dwRequestID];
  
 
             switch (request.sName)
@@ -452,17 +514,20 @@ namespace Simvars
                 case "ELEVATOR TRIM PCT": // percent
                     break;
                 case "RUDDER POSITION": // position
+                    RUDDER_POSITION = dValue;
                     break;
                 case "RUDDER TRIM": // degrees
+                    RUDDER_TRIM = dValue;
                     break;
                 case "RUDDER TRIM PCT": // percent
+                    RUDDER_TRIM_PCT = dValue;
                     break;
                 case "BRAKE PARKING POSITION":
                     BRAKE_PARKING_POSITION = (dValue == 1);
                     break;
-                case "GEAR POSITION": // percent
-                case "GEAR POSITION:1": // percent
-                case "GEAR POSITION:2": // percent
+                case "GEAR POSITION": // percent // Enum // 0 = unknown; 1 = up; 2 = down
+                case "GEAR POSITION:1":
+                case "GEAR POSITION:2":
                     GEAR_POSITION = (int)dValue; // TODO: Account for all wheels
                     break;
                 case "SPOILERS ARMED": // Bool
@@ -488,7 +553,7 @@ namespace Simvars
             {
                 lObjectIDs.Add(iObject);
             }
-            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
+            foreach (SimvarRequest oSimvarRequest in SimvarRequests)
             {
                 if (iRequest == (uint)oSimvarRequest.eRequest && (!bObjectIDSelectionEnabled || iObject == m_iObjectIdRequest))
                 {
@@ -508,29 +573,6 @@ namespace Simvars
                     
                     oSimvarRequest.bPending = false;
                     oSimvarRequest.bStillPending = false;
-                }
-            }
-        }
-
-        // May not be the best way to achive regular requests.
-        // See SimConnect.RequestDataOnSimObject
-        private void OnTick(object sender, EventArgs e)
-        {
-            Console.WriteLine("OnTick");
-            return;
-
-            bOddTick = !bOddTick;
-
-            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
-            {
-                if (!oSimvarRequest.bPending)
-                {
-                    m_oSimConnect?.RequestDataOnSimObjectType(oSimvarRequest.eRequest, oSimvarRequest.eDef, 0, m_eSimObjectType);
-                    oSimvarRequest.bPending = true;
-                }
-                else
-                {
-                    oSimvarRequest.bStillPending = true;
                 }
             }
         }
@@ -556,7 +598,7 @@ namespace Simvars
 
         private void ClearResquestsPendingState()
         {
-            foreach (SimvarRequest oSimvarRequest in lSimvarRequests)
+            foreach (SimvarRequest oSimvarRequest in SimvarRequests)
             {
                 oSimvarRequest.bPending = false;
                 oSimvarRequest.bStillPending = false;
@@ -596,8 +638,6 @@ namespace Simvars
         {
             Console.WriteLine("AddRequest");
 
-            //string sNewSimvarRequest = _sOverrideSimvarRequest != null ? _sOverrideSimvarRequest : ((m_iIndexRequest == 0) ? m_sSimvarRequest : (m_sSimvarRequest + ":" + m_iIndexRequest));
-            //string sNewUnitRequest = _sOverrideUnitRequest != null ? _sOverrideUnitRequest : m_sUnitRequest;
             SimvarRequest oSimvarRequest = new SimvarRequest
             {
                 eDef = (DEFINITION)m_iCurrentDefinition,
@@ -610,7 +650,7 @@ namespace Simvars
             oSimvarRequest.bPending = !RegisterToSimConnect(oSimvarRequest);
             oSimvarRequest.bStillPending = oSimvarRequest.bPending;
 
-            lSimvarRequests.Add(oSimvarRequest);
+            SimvarRequests.Add(oSimvarRequest);
 
             ++m_iCurrentDefinition;
             ++m_iCurrentRequest;
@@ -618,36 +658,36 @@ namespace Simvars
 
         private void RemoveSelectedRequest()
         {
-            lSimvarRequests.Remove(oSelectedSimvarRequest);
+            SimvarRequests.Remove(oSelectedSimvarRequest);
         }
 
-        private void TrySetValue(string value)
+        public void TrySetValue(string name, string value)
         {
             Console.WriteLine("TrySetValue");
 
-            if (m_oSelectedSimvarRequest != null && value != null)
+            // TODO: Make a dictionary!
+            foreach (SimvarRequest simvarRequest in SimvarRequests)
             {
-                if (!m_oSelectedSimvarRequest.bIsString) {
-                    double dValue = 0.0;
-                    if (double.TryParse(value, NumberStyles.Any, null, out dValue))
+                if (simvarRequest.sName == name)
+                {
+                    if (!simvarRequest.bIsString)
                     {
-                        m_oSimConnect.SetDataOnSimObject(m_oSelectedSimvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_DATA_SET_FLAG.DEFAULT, dValue);
+                        double dValue = 0.0;
+                        if (double.TryParse(value, NumberStyles.Any, null, out dValue))
+                        {
+                            m_oSimConnect.SetDataOnSimObject(simvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_DATA_SET_FLAG.DEFAULT, dValue);
+                        }
+                    }
+                    else
+                    {
+                        Struct1 sValueStruct = new Struct1()
+                        {
+                            sValue = value
+                        };
+                        m_oSimConnect.SetDataOnSimObject(simvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_DATA_SET_FLAG.DEFAULT, sValueStruct);
                     }
                 }
-                else
-                {
-                    Struct1 sValueStruct = new Struct1()
-                    {
-                        sValue = value
-                    };
-                    m_oSimConnect.SetDataOnSimObject(m_oSelectedSimvarRequest.eDef, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_DATA_SET_FLAG.DEFAULT, sValueStruct);
-                }
             }
-        }
-
-        public void SetTickSliderValue(int _iValue)
-        {
-            m_oTimer.Interval = new TimeSpan(0, 0, 0, 0, (int)(_iValue));
         }
     }
 }

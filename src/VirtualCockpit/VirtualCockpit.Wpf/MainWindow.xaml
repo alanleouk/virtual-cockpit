@@ -8,7 +8,7 @@
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="MainWindow" Height="805" Width="1099" MinWidth="800" MinHeight="700">
+        Title="MainWindow" Height="852" Width="1225" MinWidth="800" MinHeight="700">
 
     <Window.Resources>
         <ObjectDataProvider x:Key="SimObjectTypeFromEnum" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
@@ -32,7 +32,7 @@
 
         <Button x:Name="btn_Connection" Content="{Binding sConnectButtonLabel}" Command="{Binding cmdToggleConnect}" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="146" Height="48"/>
 
-        <ListView x:Name="lv_Simvars" ItemsSource="{Binding lSimvarRequests}" SelectedItem="{Binding oSelectedSimvarRequest, Mode=OneWayToSource}" Margin="10,90,0,221" Width="236" HorizontalAlignment="Left">
+        <ListView x:Name="lv_Simvars" ItemsSource="{Binding SimvarRequests}" SelectedItem="{Binding oSelectedSimvarRequest, Mode=OneWayToSource}" Margin="10,90,0,221" Width="346" HorizontalAlignment="Left">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Style.Triggers>
@@ -51,25 +51,6 @@
             </ListView.View>
         </ListView>
 
-        <Ellipse HorizontalAlignment="Left" Height="14" Margin="251,10,0,0" Stroke="Black" VerticalAlignment="Top" Width="14">
-            <Ellipse.Style>
-                <Style TargetType="Ellipse">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding bConnected}" Value="false">
-                            <Setter Property="Fill" Value="#FFFF5030" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding bConnected}" Value="true">
-                            <Setter Property="Fill" Value="#FF50FF30" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding bOddTick}" Value="true">
-                            <!-- Assume bOddTick is true only when bConnected is true-->
-                            <Setter Property="Fill" Value="#FF45E2F4" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Ellipse.Style>
-        </Ellipse>
-
         <Label Content="Errors" HorizontalAlignment="Left" Margin="10,0,0,193" VerticalAlignment="Bottom" Height="23" Width="83"/>
 
         <ListBox ItemsSource="{Binding lErrorMessages}" RenderTransformOrigin="0.5,0.5" Width="236" HorizontalAlignment="Left" Margin="10,482,0,10" Height="180" VerticalAlignment="Bottom">
@@ -84,14 +65,11 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
-
-        <Label Content="Frequency" HorizontalAlignment="Left" Margin="183,34,0,0" VerticalAlignment="Top" Height="25"/>
-        <Slider x:Name="sl_Tick" Value="1000" Thumb.DragCompleted="Slider_DragCompleted" HorizontalAlignment="Left" Margin="183,10,0,0" VerticalAlignment="Top" Width="63" Minimum="100" Maximum="3000" LargeChange="100" SmallChange="10" IsDirectionReversed="True" />
         <CheckBox Content="Use FSX-compatible configuration" IsChecked="{Binding bFSXcompatible, Mode=TwoWay}" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top" Width="217"/>
-        <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="300" Margin="654,223,0,0" RenderTransformOrigin="4.796,0.697" Minimum="0" Maximum="100" Value="{Binding GENERAL_ENG_THROTTLE_LEVER_POSITION_1, Mode=OneWay}" SmallChange="1" LargeChange="10" TickFrequency="10" IsEnabled="False" />
-        <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="300" Margin="701,223,0,0" RenderTransformOrigin="4.796,0.697" Minimum="0" Maximum="100" Value="{Binding GENERAL_ENG_THROTTLE_LEVER_POSITION_2, Mode=OneWay}" SmallChange="1" LargeChange="10" TickFrequency="10" IsEnabled="False" />
-        <CheckBox Content="Lock" HorizontalAlignment="Left" Height="16" Margin="664,202,0,0" VerticalAlignment="Top" Width="64" />
-        <Button Content="GND SPLRS ARMED" HorizontalAlignment="Left" Height="28" Margin="369,570,0,0" VerticalAlignment="Top" Width="126">
+        <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="300" Margin="696,259,0,0" RenderTransformOrigin="4.796,0.697" Minimum="0" Maximum="100" Value="{Binding GENERAL_ENG_THROTTLE_LEVER_POSITION_1, Mode=OneWay}" SmallChange="1" LargeChange="10" TickFrequency="10" IsEnabled="False" />
+        <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="300" Margin="743,259,0,0" RenderTransformOrigin="4.796,0.697" Minimum="0" Maximum="100" Value="{Binding GENERAL_ENG_THROTTLE_LEVER_POSITION_2, Mode=OneWay}" SmallChange="1" LargeChange="10" TickFrequency="10" IsEnabled="False" />
+        <CheckBox Content="Lock" HorizontalAlignment="Left" Height="16" Margin="706,238,0,0" VerticalAlignment="Top" Width="64" />
+        <Button Content="GND SPLRS ARMED" HorizontalAlignment="Left" Height="28" Margin="411,606,0,0" VerticalAlignment="Top" Width="126" Click="SPOILERS_ARMED_Click">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
@@ -102,7 +80,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="RET" HorizontalAlignment="Left" Height="28" Margin="369,603,0,0" VerticalAlignment="Top" Width="126">
+        <Button Content="RET" HorizontalAlignment="Left" Height="28" Margin="411,639,0,0" VerticalAlignment="Top" Width="126" Click="SPOILERS_HANDLE_POSITION_0_Click">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
@@ -113,7 +91,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="1/4" HorizontalAlignment="Left" Height="28" Margin="369,636,0,0" VerticalAlignment="Top" Width="126">
+        <Button Content="1/4" HorizontalAlignment="Left" Height="28" Margin="411,672,0,0" VerticalAlignment="Top" Width="126" Click="SPOILERS_HANDLE_POSITION_1_Click">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
@@ -124,7 +102,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="1/2" HorizontalAlignment="Left" Height="28" Margin="369,669,0,0" VerticalAlignment="Top" Width="126">
+        <Button Content="1/2" HorizontalAlignment="Left" Height="28" Margin="411,705,0,0" VerticalAlignment="Top" Width="126" Click="SPOILERS_HANDLE_POSITION_2_Click">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
@@ -135,7 +113,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="3/4" HorizontalAlignment="Left" Height="28" Margin="369,702,0,0" VerticalAlignment="Top" Width="126">
+        <Button Content="3/4" HorizontalAlignment="Left" Height="28" Margin="411,738,0,0" VerticalAlignment="Top" Width="126" Click="SPOILERS_HANDLE_POSITION_3_Click">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
@@ -146,7 +124,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="FULL" HorizontalAlignment="Left" Height="28" Margin="369,735,0,0" VerticalAlignment="Top" Width="126">
+        <Button Content="FULL" HorizontalAlignment="Left" Height="28" Margin="411,771,0,0" VerticalAlignment="Top" Width="126" Click="SPOILERS_HANDLE_POSITION_4_Click">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
@@ -158,8 +136,8 @@
             </Button.Style>
         </Button>
         <Label Content="SPEED &#xD;&#xA;BRAKE" HorizontalAlignment="Left" Margin="277,638,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.024,3.066" Height="58" Width="58"/>
-        <Label Content="FLAPS" HorizontalAlignment="Left" Margin="1010,623,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.024,3.066" Height="58" Width="58"/>
-        <Button Content="0" HorizontalAlignment="Left" Height="28" Margin="863,577,0,0" VerticalAlignment="Top" Width="126">
+        <Label Content="FLAPS" HorizontalAlignment="Left" Margin="1052,659,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.024,3.066" Height="58" Width="58"/>
+        <Button Content="0" HorizontalAlignment="Left" Height="28" Margin="905,613,0,0" VerticalAlignment="Top" Width="126" Click="FLAPS_HANDLE_INDEX_0_Click">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
@@ -170,7 +148,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="1" HorizontalAlignment="Left" Height="28" Margin="863,610,0,0" VerticalAlignment="Top" Width="126">
+        <Button Content="1" HorizontalAlignment="Left" Height="28" Margin="905,646,0,0" VerticalAlignment="Top" Width="126" Click="FLAPS_HANDLE_INDEX_1_Click">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
@@ -181,7 +159,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="2" HorizontalAlignment="Left" Height="28" Margin="863,645,0,0" VerticalAlignment="Top" Width="126">
+        <Button Content="2" HorizontalAlignment="Left" Height="28" Margin="905,681,0,0" VerticalAlignment="Top" Width="126" Click="FLAPS_HANDLE_INDEX_2_Click">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
@@ -192,7 +170,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="3L" HorizontalAlignment="Left" Height="28" Margin="863,678,0,0" VerticalAlignment="Top" Width="126">
+        <Button Content="3L" HorizontalAlignment="Left" Height="28" Margin="905,714,0,0" VerticalAlignment="Top" Width="126" Click="FLAPS_HANDLE_INDEX_3_Click">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
@@ -203,7 +181,7 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Content="FULL" HorizontalAlignment="Left" Height="28" Margin="863,711,0,0" VerticalAlignment="Top" Width="126">
+        <Button Content="FULL" HorizontalAlignment="Left" Height="28" Margin="905,747,0,0" VerticalAlignment="Top" Width="126" Click="FLAPS_HANDLE_INDEX_4_Click">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
@@ -214,10 +192,10 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Label Content="RUD TRIM" HorizontalAlignment="Left" Margin="656,571,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.024,3.066" Height="28" Width="86"/>
-        <Button Content="NOSE&#xD;&#xA;L" HorizontalAlignment="Left" Height="42" Margin="631,605,0,0" VerticalAlignment="Top" Width="65"/>
-        <Button Content="NOSE&#xA;R" HorizontalAlignment="Left" Height="42" Margin="701,604,0,0" VerticalAlignment="Top" Width="65"/>
-        <Button Content="PARK BRK" HorizontalAlignment="Left" Height="42" Margin="645,682,0,0" VerticalAlignment="Top" Width="108">
+        <Label Content="RUD TRIM" HorizontalAlignment="Left" Margin="698,607,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.024,3.066" Height="28" Width="86"/>
+        <Button Content="NOSE&#xD;&#xA;L" HorizontalAlignment="Left" Height="42" Margin="673,641,0,0" VerticalAlignment="Top" Width="65" Click="NOSE_L_Click"/>
+        <Button Content="NOSE&#xA;R" HorizontalAlignment="Left" Height="42" Margin="743,640,0,0" VerticalAlignment="Top" Width="65" Click="NOSE_R_Click"/>
+        <Button Content="PARK BRK" HorizontalAlignment="Left" Height="42" Margin="687,718,0,0" VerticalAlignment="Top" Width="108" Click="BRAKE_PARKING_POSITION_Click">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>
@@ -228,12 +206,11 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Label Content="VALUE" HorizontalAlignment="Left" Margin="565,611,0,0" VerticalAlignment="Top" RenderTransformOrigin="-2.024,3.066" Height="28" Width="50"/>
-        <Button Content="CL" HorizontalAlignment="Left" Height="28" Margin="508,305,0,0" VerticalAlignment="Top" Width="126"/>
-        <Button Content="FLX MCT" HorizontalAlignment="Left" Height="28" Margin="508,272,0,0" VerticalAlignment="Top" Width="126" IsEnabled="False"/>
-        <Button Content="TD GA" HorizontalAlignment="Left" Height="28" Margin="508,239,0,0" VerticalAlignment="Top" Width="126" IsEnabled="False"/>
-        <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="158" Margin="508,605,0,0" RenderTransformOrigin="4.796,0.697" Minimum="0" Maximum="100" Value="{Binding SPOILERS_HANDLE_POSITION, Mode=OneWay}" IsEnabled="False" />
-        <Button Content="GEAR" HorizontalAlignment="Left" Height="28" Margin="734,104,0,0" VerticalAlignment="Top" Width="126">
+        <Button Content="CL" HorizontalAlignment="Center" Height="28" Margin="0,341,0,0" VerticalAlignment="Top" Width="126" Click="Throttle_CL_Click"/>
+        <Button Content="FLX MCT" HorizontalAlignment="Center" Height="28" Margin="0,308,0,0" VerticalAlignment="Top" Width="126" IsEnabled="False"/>
+        <Button Content="TD GA" HorizontalAlignment="Center" Height="28" Margin="0,275,0,0" VerticalAlignment="Top" Width="126" IsEnabled="False"/>
+        <Slider Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" Width="20" Height="158" Margin="550,641,0,0" RenderTransformOrigin="4.796,0.697" Minimum="0" Maximum="100" Value="{Binding SPOILERS_HANDLE_POSITION, Mode=OneWay}" IsEnabled="False" />
+        <Button Content="GEAR" HorizontalAlignment="Left" Height="28" Margin="776,169,0,0" VerticalAlignment="Top" Width="126">
             <Button.Style>
                 <Style TargetType="Button">
                     <Setter Property="Background" Value="LightYellow" />
@@ -248,9 +225,21 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Label HorizontalAlignment="Left" Margin="865,106,0,0" VerticalAlignment="Top">
-            <TextBlock Text="{Binding GEAR_POSITION}" />
-        </Label>
+        <Button Content="FD" HorizontalAlignment="Left" Height="28" Margin="407,72,0,0" VerticalAlignment="Top" Width="48"/>
+        <Button Content="LS" HorizontalAlignment="Left" Height="28" Margin="460,72,0,0" VerticalAlignment="Top" Width="48"/>
+        <Button Content="LOC" HorizontalAlignment="Left" Height="28" Margin="632,74,0,0" VerticalAlignment="Top" Width="48"/>
+        <Button Content="A/THR" HorizontalAlignment="Left" Height="28" Margin="733,70,0,0" VerticalAlignment="Top" Width="48"/>
+        <Button Content="AP" HorizontalAlignment="Left" Height="28" Margin="733,30,0,0" VerticalAlignment="Top" Width="48"/>
+        <Button Content="EXPED" HorizontalAlignment="Left" Height="28" Margin="879,70,0,0" VerticalAlignment="Top" Width="48"/>
+        <Button Content="APPR" HorizontalAlignment="Left" Height="28" Margin="955,72,0,0" VerticalAlignment="Top" Width="48"/>
+        <Button Content="Speed" HorizontalAlignment="Left" Height="28" Margin="550,30,0,0" VerticalAlignment="Top" Width="48"></Button>
+        <Button Content="Heading" HorizontalAlignment="Left" Height="28" Margin="632,30,0,0" VerticalAlignment="Top" Width="48"/>
+        <Button Content="Altitude" HorizontalAlignment="Left" Height="28" Margin="879,30,0,0" VerticalAlignment="Top" Width="48"/>
+        <Button Content="Vertical" HorizontalAlignment="Left" Height="28" Margin="955,30,0,0" VerticalAlignment="Top" Width="48"/>
+        <TextBox HorizontalAlignment="Left" Height="28" Margin="598,632,0,0" TextWrapping="Wrap" Text="{Binding RUDDER_TRIM, Mode=OneWay}" VerticalAlignment="Top" Width="58"/>
+        <TextBox HorizontalAlignment="Left" Height="28" Margin="879,339,0,0" TextWrapping="Wrap" Text="{Binding RUDDER_POSITION, Mode=OneWay}" VerticalAlignment="Top" Width="58"/>
+        <Label Content="Rudder" HorizontalAlignment="Left" Margin="879,308,0,0" VerticalAlignment="Top"/>
+        <Button Content="RESET" HorizontalAlignment="Left" Height="42" Margin="598,667,0,0" VerticalAlignment="Top" Width="65" Click="RUDDER_RESET"/>
 
     </Grid>
 
