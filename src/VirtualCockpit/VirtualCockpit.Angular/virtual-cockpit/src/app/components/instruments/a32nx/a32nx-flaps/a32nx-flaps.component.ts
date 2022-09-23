@@ -12,7 +12,7 @@ export class A32NxFlapsComponent implements OnInit {
   maxValue = 4;
   step = 1;
 
-  readFrom = ['A32NX_FLAPS_HANDLE_INDEX'];
+  readFrom = ['A32NX_FLAPS_HANDLE_INDEX', 'DEBUG COMMAND'];
   writeTo = ['A32NX_FLAPS_HANDLE_INDEX'];
 
   public value: number = 0;
@@ -41,12 +41,8 @@ export class A32NxFlapsComponent implements OnInit {
   }
 
   public setValue(value: number): void {
-    // this.value = value;
-  }
-
-  public testButtonClick(): void {
     this.simConnect
-      .setVariable('A32NX_FLAPS_HANDLE_INDEX', 3)
+      .setVariable('A32NX_FLAPS_HANDLE_INDEX', value)
       .subscribe((result) => console.log(result));
   }
 }

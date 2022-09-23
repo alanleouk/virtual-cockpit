@@ -23,6 +23,7 @@ public partial class MainForm : Form
         FormClosing += MainForm_FormClosing;
 
         _simConnectService.MessageReceivedEvent += SimConnectServiceOnMessageReceivedEvent;
+        _simConnectService.LoggingEvent += SimConnectServiceOnLoggingEvent;
         _simConnectService.SetWindowHandle(Handle);
 
         /*
@@ -33,6 +34,11 @@ public partial class MainForm : Form
         // _simConnectService.AddRequest(ParamaterType.SimVar, "RUDDER POSITION", "position", 2);
         _simConnectService.Connect();
         */
+    }
+
+    private void SimConnectServiceOnLoggingEvent(string message)
+    {
+        outputTextbox.Invoke(() => outputTextbox.AppendText(message + "\r\n"));
     }
 
     private void MainForm_FormClosing(object? sender, FormClosingEventArgs e)
@@ -57,5 +63,19 @@ public partial class MainForm : Form
         }
 
         base.WndProc(ref m);
+    }
+
+    private void cmdSend_Click(object sender, EventArgs e)
+    {
+        decimal.TryParse(valueTextbox.Text, out var valueAsDecimal);
+
+        var request = new SimvarRequest
+        {
+            Name = commandTextbox.Text,
+            Units = "unknown",
+            ValueAsDecimal = valueAsDecimal,
+            ValueAsString = valueTextbox.Text
+        };
+        _simConnectService.InvokeEvent(request);
     }
 }

@@ -4,12 +4,23 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './app.component';
+import { DebugCockpitComponent } from './components/debug/debug-cockpit/debug-cockpit.component';
 import { SimvarsComponent } from './components/debug/simvars.component';
 import { A32NxFlapsComponent } from './components/instruments/a32nx/a32nx-flaps/a32nx-flaps.component';
+import { A32NxSpeedBrakesComponent } from './components/instruments/a32nx/a32nx-speed-brakes/a32nx-speed-brakes.component';
+import { AirspeedIndicatorComponent } from './components/instruments/shared/airspeed-indicator/airspeed-indicator.component';
 import { SimConnectService } from './services/simconnect.service';
+import { SvgService } from './services/svg.service';
 
 @NgModule({
-  declarations: [AppComponent, A32NxFlapsComponent, SimvarsComponent],
+  declarations: [
+    AppComponent,
+    A32NxFlapsComponent,
+    A32NxSpeedBrakesComponent,
+    AirspeedIndicatorComponent,
+    DebugCockpitComponent,
+    SimvarsComponent,
+  ],
   imports: [
     RouterModule.forRoot([
       {
@@ -27,11 +38,16 @@ import { SimConnectService } from './services/simconnect.service';
         pathMatch: 'full',
         component: SimvarsComponent,
       },
+      {
+        path: 'debug/cockpit',
+        pathMatch: 'full',
+        component: DebugCockpitComponent,
+      },
     ]),
     BrowserModule,
     HttpClientModule,
   ],
-  providers: [SimConnectService],
+  providers: [SimConnectService, SvgService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,3 +1,10 @@
-{{ value }}
-
-<button (click)="testButtonClick()">Flaps 3</button>
+<div class="instrument">
+  <div class="title">Flaps</div>
+  <div class="commands">
+    <button (click)="setValue(0)" [ngClass]="{ active: value === 0 }">0</button>
+    <button (click)="setValue(1)" [ngClass]="{ active: value === 1 }">1</button>
+    <button (click)="setValue(2)" [ngClass]="{ active: value === 2 }">2</button>
+    <button (click)="setValue(3)" [ngClass]="{ active: value === 3 }">3</button>
+    <button (click)="setValue(4)" [ngClass]="{ active: value === 4 }">4</button>
+  </div>
+</div>

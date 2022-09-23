@@ -15,8 +15,8 @@ namespace VirtualCockpit.Lib.Sevices
         private REQUEST _currentRequest = (REQUEST)10;
         public uint _objectIdRequest = 0;
 
+        private readonly object _simvarRequestsLock = new();
         private readonly ObservableCollection<SimvarRequest> _simvarRequests;
-        private readonly ObservableCollection<string> _errorMessages;
         private readonly Dictionary<string, string> _cache;
 
         // Client Area Data names
@@ -36,6 +36,9 @@ namespace VirtualCockpit.Lib.Sevices
         
         public delegate void MessageReceivedEventHandler(SimvarRequest request); 
         public event MessageReceivedEventHandler MessageReceivedEvent;
+        
+        public delegate void LoggingEventHandler(string message); 
+        public event LoggingEventHandler LoggingEvent;
 
         // Currently we are using fixed size strings of 256 characters
         private const int MESSAGE_SIZE = 256;
@@ -87,7 +90,6 @@ namespace VirtualCockpit.Lib.Sevices
         public SimConnectService()
         {
             _simvarRequests = new ObservableCollection<SimvarRequest>();
-            _errorMessages = new ObservableCollection<string>();
             _cache = new Dictionary<string, string>();
         }
 
@@ -98,6 +100,10 @@ namespace VirtualCockpit.Lib.Sevices
         
         public void ReceiveSimConnectMessage()
         {
+            if (_simConnect == null)
+            {
+                return;
+            }
             _simConnect.ReceiveMessage();
         }
         
@@ -116,8 +122,9 @@ namespace VirtualCockpit.Lib.Sevices
                     return true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                LoggingEvent?.Invoke("Handle Window Message failed: " + ex);
                 Disconnect();
             }
 
@@ -185,12 +192,14 @@ namespace VirtualCockpit.Lib.Sevices
             }
             catch (COMException ex)
             {
-                Console.WriteLine("Connection to KH failed: " + ex.Message);
+                LoggingEvent?.Invoke("Connection to KH failed: " + ex.Message);
             }
         }
 
         public void Disconnect()
         {
+            LoggingEvent?.Invoke("Disconnect");
+            
             _cache.Clear();
 
             if (_simConnect != null)
@@ -204,8 +213,11 @@ namespace VirtualCockpit.Lib.Sevices
 
         public void Reset()
         {
-            Disconnect();
-            _simvarRequests.Clear();
+            lock (_simvarRequestsLock)
+            {
+                Disconnect();
+                _simvarRequests.Clear();
+            }
         }
 
         public void Add(ParamaterType paramaterType, string name, string units, int precision)
@@ -220,28 +232,43 @@ namespace VirtualCockpit.Lib.Sevices
 
         public void Add(AddRequest[] requests)
         {
-            foreach (var request in requests)
+            lock (_simvarRequestsLock)
             {
-                if (!_simvarRequests.Any(item => item.Name == request.Name))
+                foreach (var request in requests)
                 {
-                    var simvarRequest = new SimvarRequest
+                    if (!_simvarRequests.Any(item => item.Name == request.Name))
                     {
-                        DefinitionId = DEFINITION.Dummy,
-                        RequestId = REQUEST.Dummy,
-                        ParamaterType = request.ParamaterType,
-                        Name = request.Name,
-                        Units = request.Units,
-                        Precision = request.Precision
-                    };
-                    _simvarRequests.Add(simvarRequest);
+                        LoggingEvent?.Invoke("Add: " + request.Name);
 
-                    simvarRequest.Pending = !RegisterToSimConnect(simvarRequest);
+                        var simvarRequest = new SimvarRequest
+                        {
+                            DefinitionId = DEFINITION.Dummy,
+                            RequestId = REQUEST.Dummy,
+                            ParamaterType = request.ParamaterType,
+                            Name = request.Name,
+                            Units = request.Units,
+                            Precision = request.Precision
+                        };
+                        _simvarRequests.Add(simvarRequest);
+
+                        simvarRequest.Pending = !RegisterToSimConnect(simvarRequest);
+                    }
+                    else
+                    {
+                        var simvarRequest = _simvarRequests.FirstOrDefault(item => item.Name == request.Name);
+                        if (simvarRequest != null)
+                        {
+                            simvarRequest.Units = request.Units;
+                            simvarRequest.Precision = request.Precision;
+                        }
+                    }
                 }
             }
         }
 
         public void Send()
         {
+            LoggingEvent?.Invoke("Send");
             foreach (var request in _simvarRequests)
             {
                 MessageReceivedEvent?.Invoke(request);
@@ -254,6 +281,8 @@ namespace VirtualCockpit.Lib.Sevices
             {
                 return false;
             }
+            
+            LoggingEvent?.Invoke("Register to SimConnect");
 
             switch (request.ParamaterType)
             {
@@ -303,11 +332,11 @@ namespace VirtualCockpit.Lib.Sevices
             InitializeClientDataAreas();
 
             // Register pending requests
-            foreach (SimvarRequest oSimvarRequest in _simvarRequests)
+            foreach (SimvarRequest simvarRequest in _simvarRequests)
             {
-                if (oSimvarRequest.Pending)
+                if (simvarRequest.Pending)
                 {
-                    oSimvarRequest.Pending = !RegisterToSimConnect(oSimvarRequest);
+                    simvarRequest.Pending = !RegisterToSimConnect(simvarRequest);
                 }
             }
         }
@@ -321,9 +350,7 @@ namespace VirtualCockpit.Lib.Sevices
         private void SimConnect_OnReceiveException(SimConnect sender, SIMCONNECT_RECV_EXCEPTION data)
         {
             SIMCONNECT_EXCEPTION eException = (SIMCONNECT_EXCEPTION)data.dwException;
-            Console.WriteLine("SimConnect_OnReceiveException: " + eException.ToString());
-
-            _errorMessages.Add("SimConnect : " + eException.ToString());
+            LoggingEvent?.Invoke("SimConnect_OnReceiveException: " + eException);
         }
 
         private void SimConnect_OnReceiveSimObjectData(SimConnect sender, SIMCONNECT_RECV_SIMOBJECT_DATA data)
@@ -486,6 +513,11 @@ namespace VirtualCockpit.Lib.Sevices
             }
         }
 
+        public void InvokeEvent(SimvarRequest request)
+        {
+            MessageReceivedEvent?.Invoke(request);
+        }
+
         public void SendWASMCmd(String command)
         {
             if (!_connected)
@@ -512,7 +544,7 @@ namespace VirtualCockpit.Lib.Sevices
             }
 
             var request = _simvarRequests.FirstOrDefault(item => item.Name == name);
-            if (request == null || !request.Registered)
+            if (request == null || (request.ParamaterType == ParamaterType.SimVar && !request.Registered))
             {
                 return false;
             }

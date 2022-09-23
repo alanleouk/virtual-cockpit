@@ -1,0 +1,51 @@
+<svg
+  version="1.0"
+  viewBox="0 0 360 360"
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:cc="http://creativecommons.org/ns#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+  <style>
+    .title {
+      font: bold 18px sans-serif;
+      color: #fff;
+      fill: #fff;
+    }
+    .label {
+      font: 16px sans-serif;
+      color: #fff;
+      fill: #fff;
+    }
+    .readout {
+      border: 1px solid #666;
+      color: #ccc;
+      fill: #ccc;
+    }
+    text.readout {
+      color: #000;
+      fill: #000;
+      font: bold 24px sans-serif;
+    }
+  </style>
+
+  <g>
+    <circle cx="180" cy="180" r="180" fill="#000" />
+    <circle cx="180" cy="180" r="179" fill="#ccc" />
+    <circle cx="180" cy="180" r="177" fill="#aaa" />
+    <circle cx="180" cy="180" r="175" fill="#999" />
+    <circle cx="180" cy="180" r="173" fill="#333" />
+    <circle cx="180" cy="180" r="170" fill="#000" />
+
+    <!-- Top Arc -->
+    <path
+      d="m23.2 131.86c20.374-67.28 82.897-116.3 156.8-116.3 55.406 0 104.41 27.554 134.06 69.698"
+      fill="none"
+      stroke="#fff"
+      stroke-width="2"
+    />
+
+    <rect x="96" y="120" width="80" height="24" rx="8" class="readout" />
+    <text x="136" y="140" text-anchor="middle" class="readout">{{ v }}</text>
+  </g>
+</svg>

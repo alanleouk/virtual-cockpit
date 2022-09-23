@@ -13,3 +13,62 @@ table {
     }
   }
 }
+
+.instrument {
+  .title {
+    font-weight: bold;
+    font-size: 12px;
+    color: #000;
+  }
+
+  .values {
+    font-weight: bold;
+  }
+
+  .commands {
+    button {
+      padding: 2px 6px;
+      margin: 1px;
+      font-size: 9px;
+
+      background-color: lightsteelblue;
+      border: 1px solid gray;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &.active {
+        background-color: lightgreen;
+      }
+    }
+
+    button:hover {
+      background-color: white;
+    }
+  }
+}
+
+.gauge-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  &.rows {
+    flex-direction: row;
+  }
+
+  &.columns {
+    flex-direction: column;
+  }
+}
+
+.gauge-slot {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 4px;
+  flex-direction: row;
+
+  &.medium {
+    width: 300px;
+    height: 300px;
+  }
+}

@@ -1,0 +1,21 @@
+<div class="instrument">
+  <div class="title">Speed Brakes</div>
+  <div class="commands">
+    <button (click)="setSpoilersArmed()" [ngClass]="{ active: armed }">
+      Armed
+    </button>
+    <button (click)="setValue(0)" [ngClass]="{ active: value >= 0 }">0</button>
+    <button (click)="setValue(0.25)" [ngClass]="{ active: value >= 0.25 }">
+      25
+    </button>
+    <button (click)="setValue(0.5)" [ngClass]="{ active: value >= 0.5 }">
+      50
+    </button>
+    <button (click)="setValue(0.75)" [ngClass]="{ active: value >= 0.75 }">
+      75
+    </button>
+    <button (click)="setValue(1)" [ngClass]="{ active: value === 1 }">
+      100
+    </button>
+  </div>
+</div>
