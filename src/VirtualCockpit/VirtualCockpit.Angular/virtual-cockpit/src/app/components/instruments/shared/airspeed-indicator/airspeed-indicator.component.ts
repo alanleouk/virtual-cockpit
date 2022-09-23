@@ -12,6 +12,7 @@ export class AirspeedIndicatorComponent implements OnInit, AfterViewInit {
   readFrom = ['AIRSPEED INDICATED', 'DEBUG COMMAND'];
 
   public v: number = 0;
+  public vString: string = '';
   public vMin: number = 0;
   public vMax: number = 240;
   public tickMajor: number = 10;
@@ -47,6 +48,7 @@ export class AirspeedIndicatorComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.simConnect.subscribeTo(this.readFrom).subscribe((result) => {
       this.v = result.valueAsDecimal;
+      this.vString = result.valueAsString || '';
       this.updateNeedle();
     });
 
