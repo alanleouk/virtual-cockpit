@@ -9,6 +9,7 @@ import { SimvarsComponent } from './components/debug/simvars.component';
 import { A32NxFlapsComponent } from './components/instruments/a32nx/a32nx-flaps/a32nx-flaps.component';
 import { A32NxSpeedBrakesComponent } from './components/instruments/a32nx/a32nx-speed-brakes/a32nx-speed-brakes.component';
 import { AirspeedIndicatorComponent } from './components/instruments/shared/airspeed-indicator/airspeed-indicator.component';
+import { ParkingBrakeComponent } from './components/instruments/shared/parking-brake/parking-brake.component';
 import { SimConnectService } from './services/simconnect.service';
 import { SvgService } from './services/svg.service';
 
@@ -19,6 +20,7 @@ import { SvgService } from './services/svg.service';
     A32NxSpeedBrakesComponent,
     AirspeedIndicatorComponent,
     DebugCockpitComponent,
+    ParkingBrakeComponent,
     SimvarsComponent,
   ],
   imports: [
