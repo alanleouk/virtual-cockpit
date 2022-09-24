@@ -33,11 +33,13 @@ namespace VirtualCockpit.Lib.Sevices
 
         private bool _FSXcompatible = false;
         private bool _connected = false;
-        
-        public delegate void MessageReceivedEventHandler(SimvarRequest request); 
+
+        public delegate void MessageReceivedEventHandler(SimvarRequest request);
+
         public event MessageReceivedEventHandler MessageReceivedEvent;
-        
-        public delegate void LoggingEventHandler(string message); 
+
+        public delegate void LoggingEventHandler(string message);
+
         public event LoggingEventHandler LoggingEvent;
 
         // Currently we are using fixed size strings of 256 characters
@@ -49,8 +51,10 @@ namespace VirtualCockpit.Lib.Sevices
         {
             public UInt16 DefineID;
             public UInt16 Offset;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
             public String str;
+
             public float value;
         };
 
@@ -60,6 +64,7 @@ namespace VirtualCockpit.Lib.Sevices
         {
             public double exeF;
             public Int32 exeI;
+
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
             public String exeS;
         };
@@ -97,16 +102,17 @@ namespace VirtualCockpit.Lib.Sevices
         {
             _hWnd = hWnd;
         }
-        
+
         public void ReceiveSimConnectMessage()
         {
             if (_simConnect == null)
             {
                 return;
             }
+
             _simConnect.ReceiveMessage();
         }
-        
+
         public int GetUserSimConnectWinEvent()
         {
             return WM_USER_SIMCONNECT;
@@ -158,7 +164,8 @@ namespace VirtualCockpit.Lib.Sevices
 
             try
             {
-                _simConnect = new SimConnect("Simconnect", _hWnd, WM_USER_SIMCONNECT, null, _FSXcompatible ? (uint)1 : 0);
+                _simConnect = new SimConnect("Simconnect", _hWnd, WM_USER_SIMCONNECT, null,
+                    _FSXcompatible ? (uint)1 : 0);
                 _simConnect.OnRecvOpen += SimConnect_OnReceiveOpen;
                 _simConnect.OnRecvQuit += SimConnect_OnReceiveQuit;
                 _simConnect.OnRecvException += SimConnect_OnReceiveException;
@@ -174,7 +181,7 @@ namespace VirtualCockpit.Lib.Sevices
         public void Disconnect()
         {
             LoggingEvent?.Invoke("Disconnect");
-            
+
             _cache.Clear();
 
             if (_simConnect != null)
@@ -197,12 +204,16 @@ namespace VirtualCockpit.Lib.Sevices
 
         public void Add(ParamaterType paramaterType, string name, string units, int precision)
         {
-            Add(new[] { new AddRequest {
-                ParamaterType = paramaterType,
-                Name = name,
-                Units = units,
-                Precision = precision
-            }});
+            Add(new[]
+            {
+                new AddRequest
+                {
+                    ParamaterType = paramaterType,
+                    Name = name,
+                    Units = units,
+                    Precision = precision
+                }
+            });
         }
 
         public void Add(AddRequest[] requests)
@@ -256,7 +267,7 @@ namespace VirtualCockpit.Lib.Sevices
             {
                 return false;
             }
-            
+
             LoggingEvent?.Invoke("Register to SimConnect");
 
             switch (request.ParamaterType)
@@ -267,15 +278,20 @@ namespace VirtualCockpit.Lib.Sevices
 
                     if (request.Units == null)
                     {
-                        _simConnect.AddToDataDefinition(request.DefinitionId, request.Name, "", SIMCONNECT_DATATYPE.STRING256, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+                        _simConnect.AddToDataDefinition(request.DefinitionId, request.Name, "",
+                            SIMCONNECT_DATATYPE.STRING256, 0.0f, SimConnect.SIMCONNECT_UNUSED);
                         _simConnect.RegisterDataDefineStruct<String256>(request.DefinitionId);
                     }
                     else
                     {
-                        _simConnect.AddToDataDefinition(request.DefinitionId, request.Name, request.Units, SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+                        _simConnect.AddToDataDefinition(request.DefinitionId, request.Name, request.Units,
+                            SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
                         _simConnect.RegisterDataDefineStruct<double>(request.DefinitionId);
                     }
-                    _simConnect?.RequestDataOnSimObject(request.RequestId, request.DefinitionId, SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.SIM_FRAME, SIMCONNECT_DATA_REQUEST_FLAG.CHANGED, 0, 0, 0);
+
+                    _simConnect?.RequestDataOnSimObject(request.RequestId, request.DefinitionId,
+                        SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.SIM_FRAME,
+                        SIMCONNECT_DATA_REQUEST_FLAG.CHANGED, 0, 0, 0);
 
                     ++_currentDefinition;
                     ++_currentRequest;
@@ -332,7 +348,8 @@ namespace VirtualCockpit.Lib.Sevices
         {
             Console.WriteLine("SimConnect_OnReceiveSimObjectData");
 
-            var request = _simvarRequests.FirstOrDefault(item => item.ParamaterType == ParamaterType.SimVar && (UInt16)item.DefinitionId == data.dwDefineID);
+            var request = _simvarRequests.FirstOrDefault(item =>
+                item.ParamaterType == ParamaterType.SimVar && (UInt16)item.DefinitionId == data.dwDefineID);
             if (request == null)
             {
                 return;
@@ -349,10 +366,12 @@ namespace VirtualCockpit.Lib.Sevices
             if (data.dwRequestID == (uint)CLIENTDATA_REQUEST_ID.ACK)
             {
                 var ackData = (LVarAck)(data.dwData[0]);
-                Debug.WriteLine($"----> Acknowledge: ID: {ackData.DefineID}, Offset: {ackData.Offset}, String: {ackData.str}, value: {ackData.value}");
+                Debug.WriteLine(
+                    $"----> Acknowledge: ID: {ackData.DefineID}, Offset: {ackData.Offset}, String: {ackData.str}, value: {ackData.value}");
 
                 // if LVar DefineID already exists, ignore it, otherwise we will get "DUPLICATE_ID" exception
-                var request = _simvarRequests.FirstOrDefault(item => item.ParamaterType == ParamaterType.LVar && $"(L:{item.Name})" == ackData.str);
+                var request = _simvarRequests.FirstOrDefault(item =>
+                    item.ParamaterType == ParamaterType.LVar && $"(L:{item.Name})" == ackData.str);
                 if (request == null || request.Registered)
                 {
                     return;
@@ -365,14 +384,17 @@ namespace VirtualCockpit.Lib.Sevices
                 request.ValueAsDecimal = (decimal)ackData.value;
                 request.ValueAsString = request.ValueAsDecimal.ToString($"F{request.Precision}");
 
-                _simConnect?.AddToClientDataDefinition((DEFINITION)ackData.DefineID, ackData.Offset, sizeof(float), 0, 0);
+                _simConnect?.AddToClientDataDefinition((DEFINITION)ackData.DefineID, ackData.Offset, sizeof(float), 0,
+                    0);
                 _simConnect?.RegisterStruct<SIMCONNECT_RECV_CLIENT_DATA, float>(request.DefinitionId);
                 _simConnect?.RequestClientData(
                     CLIENT_DATA_ID.LVARS,
                     request.RequestId,
                     request.DefinitionId,
-                    SIMCONNECT_CLIENT_DATA_PERIOD.ON_SET, // data will be sent whenever SetClientData is used on this client area (even if this defineID doesn't change)
-                    SIMCONNECT_CLIENT_DATA_REQUEST_FLAG.CHANGED, // if this is used, this defineID only is sent when its value has changed
+                    SIMCONNECT_CLIENT_DATA_PERIOD
+                        .ON_SET, // data will be sent whenever SetClientData is used on this client area (even if this defineID doesn't change)
+                    SIMCONNECT_CLIENT_DATA_REQUEST_FLAG
+                        .CHANGED, // if this is used, this defineID only is sent when its value has changed
                     0, 0, 0);
 
                 UpdateRequestValue(request, data);
@@ -382,7 +404,8 @@ namespace VirtualCockpit.Lib.Sevices
             }
             else if (data.dwRequestID == (uint)CLIENTDATA_REQUEST_ID.RESULT)
             {
-                var request = _simvarRequests.FirstOrDefault(item => item.ParamaterType == ParamaterType.LVar && (UInt16)item.DefinitionId == data.dwDefineID);
+                var request = _simvarRequests.FirstOrDefault(item =>
+                    item.ParamaterType == ParamaterType.LVar && (UInt16)item.DefinitionId == data.dwDefineID);
                 if (request == null)
                 {
                     return;
@@ -393,7 +416,8 @@ namespace VirtualCockpit.Lib.Sevices
             }
             else if (data.dwRequestID >= (uint)CLIENTDATA_REQUEST_ID.START_LVAR)
             {
-                var request = _simvarRequests.FirstOrDefault(item => item.ParamaterType == ParamaterType.LVar && (UInt16)item.DefinitionId == data.dwDefineID);
+                var request = _simvarRequests.FirstOrDefault(item =>
+                    item.ParamaterType == ParamaterType.LVar && (UInt16)item.DefinitionId == data.dwDefineID);
 
                 if (request != null)
                 {
@@ -407,7 +431,8 @@ namespace VirtualCockpit.Lib.Sevices
         {
             // register Client Data (for LVars)
             _simConnect.MapClientDataNameToID(CLIENT_DATA_NAME_LVARS, CLIENT_DATA_ID.LVARS);
-            _simConnect.CreateClientData(CLIENT_DATA_ID.LVARS, SimConnect.SIMCONNECT_CLIENTDATA_MAX_SIZE, SIMCONNECT_CREATE_CLIENT_DATA_FLAG.DEFAULT);
+            _simConnect.CreateClientData(CLIENT_DATA_ID.LVARS, SimConnect.SIMCONNECT_CLIENTDATA_MAX_SIZE,
+                SIMCONNECT_CREATE_CLIENT_DATA_FLAG.DEFAULT);
 
             // register Client Data (for WASM Module Commands)
             _simConnect.MapClientDataNameToID(CLIENT_DATA_NAME_COMMAND, CLIENT_DATA_ID.CMD);
@@ -416,8 +441,10 @@ namespace VirtualCockpit.Lib.Sevices
 
             // register Client Data (for LVar acknowledge)
             _simConnect.MapClientDataNameToID(CLIENT_DATA_NAME_ACKNOWLEDGE, CLIENT_DATA_ID.ACK);
-            _simConnect.CreateClientData(CLIENT_DATA_ID.ACK, (uint)Marshal.SizeOf<LVarAck>(), SIMCONNECT_CREATE_CLIENT_DATA_FLAG.DEFAULT);
-            _simConnect.AddToClientDataDefinition(CLIENTDATA_DEFINITION_ID.ACK, 0, (uint)Marshal.SizeOf<LVarAck>(), 0, 0);
+            _simConnect.CreateClientData(CLIENT_DATA_ID.ACK, (uint)Marshal.SizeOf<LVarAck>(),
+                SIMCONNECT_CREATE_CLIENT_DATA_FLAG.DEFAULT);
+            _simConnect.AddToClientDataDefinition(CLIENTDATA_DEFINITION_ID.ACK, 0, (uint)Marshal.SizeOf<LVarAck>(), 0,
+                0);
             _simConnect.RegisterStruct<SIMCONNECT_RECV_CLIENT_DATA, LVarAck>(CLIENTDATA_DEFINITION_ID.ACK);
             _simConnect.RequestClientData(
                 CLIENT_DATA_ID.ACK,
@@ -429,8 +456,10 @@ namespace VirtualCockpit.Lib.Sevices
 
             // register Client Data (for RESULT)
             _simConnect.MapClientDataNameToID(CLIENT_DATA_NAME_RESULT, CLIENT_DATA_ID.RESULT);
-            _simConnect.CreateClientData(CLIENT_DATA_ID.RESULT, (uint)Marshal.SizeOf<Result>(), SIMCONNECT_CREATE_CLIENT_DATA_FLAG.DEFAULT);
-            _simConnect.AddToClientDataDefinition(CLIENTDATA_DEFINITION_ID.RESULT, 0, (uint)Marshal.SizeOf<Result>(), 0, 0);
+            _simConnect.CreateClientData(CLIENT_DATA_ID.RESULT, (uint)Marshal.SizeOf<Result>(),
+                SIMCONNECT_CREATE_CLIENT_DATA_FLAG.DEFAULT);
+            _simConnect.AddToClientDataDefinition(CLIENTDATA_DEFINITION_ID.RESULT, 0, (uint)Marshal.SizeOf<Result>(), 0,
+                0);
             _simConnect.RegisterStruct<SIMCONNECT_RECV_CLIENT_DATA, Result>(CLIENTDATA_DEFINITION_ID.RESULT);
             _simConnect.RequestClientData(
                 CLIENT_DATA_ID.RESULT,
@@ -503,7 +532,8 @@ namespace VirtualCockpit.Lib.Sevices
             String256 cmd;
             cmd.Value = command;
 
-            _simConnect.SetClientData(CLIENT_DATA_ID.CMD, CLIENTDATA_DEFINITION_ID.CMD, SIMCONNECT_CLIENT_DATA_SET_FLAG.DEFAULT, 0, cmd);
+            _simConnect.SetClientData(CLIENT_DATA_ID.CMD, CLIENTDATA_DEFINITION_ID.CMD,
+                SIMCONNECT_CLIENT_DATA_SET_FLAG.DEFAULT, 0, cmd);
         }
 
         public static dynamic Cast(dynamic obj, Type castTo)
@@ -511,7 +541,7 @@ namespace VirtualCockpit.Lib.Sevices
             return Convert.ChangeType(obj, castTo);
         }
 
-        public bool SetVariable(string name, decimal value)
+        public bool SetVariable(string name, decimal? value)
         {
             if (!_connected)
             {
@@ -528,7 +558,8 @@ namespace VirtualCockpit.Lib.Sevices
             {
                 case ParamaterType.SimVar:
                     request.ValueAsObject = Cast(value, request.ValueAsObject.GetType());
-                    _simConnect.SetDataOnSimObject(request.DefinitionId, 0, SIMCONNECT_DATA_SET_FLAG.DEFAULT, request.ValueAsObject);
+                    _simConnect.SetDataOnSimObject(request.DefinitionId, 0, SIMCONNECT_DATA_SET_FLAG.DEFAULT,
+                        request.ValueAsObject);
                     break;
 
                 case ParamaterType.LVar:
@@ -537,11 +568,11 @@ namespace VirtualCockpit.Lib.Sevices
 
                 case ParamaterType.KEvent:
                     _simConnect.TransmitClientEvent(
-                             0,
-                             (EVENT)request.DefinitionId,
-                             (uint)value,
-                             (EVENT)SimConnect.SIMCONNECT_GROUP_PRIORITY_HIGHEST,
-                             SIMCONNECT_EVENT_FLAG.GROUPID_IS_PRIORITY);
+                        0,
+                        (EVENT)request.DefinitionId,
+                        (uint)(value ?? 0),
+                        (EVENT)SimConnect.SIMCONNECT_GROUP_PRIORITY_HIGHEST,
+                        SIMCONNECT_EVENT_FLAG.GROUPID_IS_PRIORITY);
                     break;
             }
 

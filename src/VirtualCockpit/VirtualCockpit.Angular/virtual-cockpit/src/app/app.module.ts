@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 
@@ -49,6 +50,7 @@ import { SvgService } from './services/svg.service';
       },
     ]),
     BrowserModule,
+    FormsModule,
     HttpClientModule,
   ],
   providers: [SimConnectService, SvgService],
