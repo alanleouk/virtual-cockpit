@@ -136,7 +136,6 @@ namespace VirtualCockpit.Lib.Sevices
             /*
             AddRequest("GENERAL ENG THROTTLE LEVER POSITION:1", "percent", false);
             AddRequest("GENERAL ENG THROTTLE LEVER POSITION:2", "percent", false);
-            AddRequest("FLAPS HANDLE INDEX", "number", false);
             AddRequest("AILERON POSITION", "position", false);
             AddRequest("AILERON TRIM PCT", "percent", false);
             AddRequest("ELEVATOR POSITION", "position", false);
@@ -144,33 +143,9 @@ namespace VirtualCockpit.Lib.Sevices
             AddRequest("RUDDER POSITION", "position", false);
             AddRequest("RUDDER TRIM", "degrees", false);
             AddRequest("RUDDER TRIM PCT", "percent", false);
-            AddRequest("BRAKE PARKING POSITION", "Bool", false);
             AddRequest("GEAR POSITION", "percent", false);
             AddRequest("GEAR POSITION:1", "percent", false);
             AddRequest("GEAR POSITION:2", "percent", false);
-            AddRequest("SPOILERS ARMED", "Bool", false);
-            AddRequest("SPOILERS HANDLE POSITION", "percent", false);
-            AddRequest("AUTOBRAKES ACTIVE", "Bool", false);
-            AddRequest("AUTO BRAKE SWITCH CB", "number", false);
-            AddRequest("AUTOPILOT FLIGHT DIRECTOR ACTIVE", "Bool", false);
-            AddRequest("AUTOPILOT AIRSPEED HOLD", "Bool", false);
-            AddRequest("AUTOPILOT AIRSPEED HOLD VAR", "Knots", false);
-            AddRequest("AUTOPILOT ALTITUDE LOCK", "Bool", false);
-            AddRequest("AUTOPILOT ALTITUDE LOCK VAR", "Feet", false);
-            AddRequest("AUTOPILOT APPROACH HOLD", "Bool", false);
-            // AddRequest("AUTOPILOT ATTITUDE HOLD", "Bool", false);
-            // AddRequest("AUTOPILOT BANK HOLD", "Bool", false);
-            // AddRequest("AUTOPILOT BANK HOLD REF", "Degrees", false);
-            AddRequest("AUTOPILOT GLIDESLOPE HOLD", "Bool", false);
-            AddRequest("AUTOPILOT MACH HOLD", "Bool", false);
-            AddRequest("AUTOPILOT MACH HOLD VAR", "Number", false);
-            // AddRequest("AUTOPILOT PITCH HOLD", "Bool", false);
-            // AddRequest("AUTOPILOT PITCH HOLD REF", "Radians", false);
-            // AddRequest("AUTOPILOT RPM HOLD", "Bool", false);
-            // AddRequest("AUTOPILOT RPM HOLD VAR", "Number", false);
-            AddRequest("AUTOPILOT VERTICAL HOLD", "Bool", false);
-            AddRequest("AUTOPILOT VERTICAL HOLD VAR", "feet per minute", false);
-            AddRequest("AUTOPILOT MANAGED THROTTLE ACTIVE", "Bool", false);
             */
         }
 
