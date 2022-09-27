@@ -1,8 +1,9 @@
 export class ValueProperties {
   public value: number;
-  public color?: string;
+  public feebackColor: string;
 
   constructor(value: number) {
     this.value = value;
+    this.feebackColor = 'default';
   }
 }

@@ -1,5 +1,13 @@
 <div class="gauge-container rows">
   <div class="gauge-slot medium">
+    <app-a32nx-button
+      label="FD"
+      [readFrom]="['AUTOPILOT FLIGHT DIRECTOR ACTIVE']"
+      [writeTo]="['TOGGLE_FLIGHT_DIRECTOR']"
+    ></app-a32nx-button>
+  </div>
+  <!--
+  <div class="gauge-slot medium">
     <app-airspeed-indicator></app-airspeed-indicator>
   </div>
   <div class="gauge-container columns">
@@ -17,6 +25,11 @@
     </div>
   </div>
   <div class="gauge-slot medium">
-    <app-a32nx-button></app-a32nx-button>
+    <app-a32nx-button
+      label="FD"
+      [readFrom]="['AUTOPILOT FLIGHT DIRECTOR ACTIVE']"
+      [writeTo]="['TOGGLE_FLIGHT_DIRECTOR']"
+    ></app-a32nx-button>
   </div>
+  -->
 </div>

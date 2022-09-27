@@ -36,7 +36,6 @@ var threadId = GetWindowThreadProcessId(handle, IntPtr.Zero);
 var hookProc = new HookProc(MessageHookProc);
 SetWindowsHookEx(HookType.WH_GETMESSAGE, hookProc, IntPtr.Zero, threadId);
 simConnectService.SetWindowHandle(handle);
-simConnectService.Setup();
 simConnectService.Connect();
 services.AddSingleton<SimConnectService>();
 services.AddScoped<WebSocketService>();

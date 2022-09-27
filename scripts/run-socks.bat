@@ -1,0 +1,1 @@
+dotnet run --project "../src/VirtualCockpit.SocksForms/VirtualCockpit.SocksForms.csproj"

@@ -13,6 +13,15 @@ export class SimConnectService {
   subject = new Subject<SimvarRequest>();
 
   public allSimvars: Simvar[] = [
+    // Debug Commands
+    {
+      category: 'Debug',
+      paramaterType: ParamaterType.LVar,
+      name: 'DEBUG COMMAND',
+      description: 'Command used for debugging',
+      units: 'number',
+      precision: 6,
+    },
     // Flaps
     {
       category: 'Flaps',
@@ -133,6 +142,22 @@ export class SimConnectService {
       category: 'EFIS Control Panel',
       paramaterType: ParamaterType.LVar,
       name: 'XMLVAR_BARO_SELECTOR_HPA_1',
+      units: 'number',
+      precision: 0,
+      writable: true,
+    },
+    {
+      category: 'EFIS Control Panel',
+      paramaterType: ParamaterType.SimVar,
+      name: 'AUTOPILOT FLIGHT DIRECTOR ACTIVE',
+      units: 'number',
+      precision: 0,
+      writable: false,
+    },
+    {
+      category: 'EFIS Control Panel',
+      paramaterType: ParamaterType.KEvent,
+      name: 'TOGGLE_FLIGHT_DIRECTOR',
       units: 'number',
       precision: 0,
       writable: true,
