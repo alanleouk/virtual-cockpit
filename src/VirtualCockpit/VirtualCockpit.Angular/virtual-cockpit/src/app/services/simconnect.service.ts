@@ -552,10 +552,25 @@ export class SimConnectService {
     {
       category: 'Rudder Trim',
       paramaterType: ParamaterType.SimVar,
-      name: 'RUDDER TRIM SET',
+      name: 'RUDDER TRIM PCT',
       units: 'number',
-      precision: 0,
+      precision: 2,
       writable: true,
+    },
+    // Throttle
+    {
+      category: 'Throttle',
+      paramaterType: ParamaterType.SimVar,
+      name: 'GENERAL ENG THROTTLE LEVER POSITION:1',
+      units: 'percent',
+      precision: 0,
+    },
+    {
+      category: 'Throttle',
+      paramaterType: ParamaterType.SimVar,
+      name: 'GENERAL ENG THROTTLE LEVER POSITION:2',
+      units: 'percent',
+      precision: 0,
     },
   ];
 
