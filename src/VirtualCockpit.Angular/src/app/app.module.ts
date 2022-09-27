@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { DeveloperCockpitComponent } from './components/developer/developer-cockpit/developer-cockpit.component';
 import { SimvarsComponent } from './components/developer/simvars.component';
+import { A32NxButtonComponent } from './components/instruments/a32nx/a32nx-button/a32nx-button.compmonent';
 import { A32NxFlapsComponent } from './components/instruments/a32nx/a32nx-flaps/a32nx-flaps.component';
 import { A32NxSpeedBrakesComponent } from './components/instruments/a32nx/a32nx-speed-brakes/a32nx-speed-brakes.component';
 import { AirspeedIndicatorComponent } from './components/instruments/shared/airspeed-indicator/airspeed-indicator.component';
@@ -18,6 +19,7 @@ import { SvgService } from './services/svg.service';
 @NgModule({
   declarations: [
     AppComponent,
+    A32NxButtonComponent,
     A32NxFlapsComponent,
     A32NxSpeedBrakesComponent,
     AirspeedIndicatorComponent,

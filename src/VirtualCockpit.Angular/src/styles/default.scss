@@ -77,3 +77,41 @@ table {
     height: 300px;
   }
 }
+
+.a32nx-button {
+  display: inline-block;
+  background-color: #000;
+  border: 1px solid #333;
+  border-radius: 3px;
+  width: 52px;
+  height: 52px;
+  text-align: center;
+
+  &:hover {
+    background-color: #333;
+    cursor: pointer;
+  }
+
+  .feedback {
+    width: 40px;
+    height: 16px;
+    background-color: #333;
+    border: 1px solid #666;
+    border-radius: 3px;
+    margin: 3px 5px;
+
+    &.red {
+      background-color: #f00;
+    }
+    &.amber {
+      background-color: #f90;
+    }
+    &.green {
+      background-color: #0f0;
+    }
+  }
+
+  .label {
+    padding: 3px 0;
+  }
+}
