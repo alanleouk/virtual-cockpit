@@ -1,0 +1,43 @@
+<table class="table table-hover table-sm">
+  <thead>
+    <tr>
+      <th>Category</th>
+      <th>Name</th>
+      <th>Value</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let simvar of simvars">
+      <td>{{ simvar.category }}</td>
+      <td>{{ simvar.name }}</td>
+      <td>
+        <div *ngIf="simvar.paramaterType !== ParamaterType.KEvent">
+          {{ simvar.valueAsString }}
+        </div>
+        <div
+          *ngIf="
+            simvar.paramaterType === ParamaterType.KEvent || simvar.writable
+          "
+        >
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            [(ngModel)]="simvar.valueToSend"
+          />
+        </div>
+      </td>
+      <td>
+        <button
+          *ngIf="
+            simvar.paramaterType === ParamaterType.KEvent || simvar.writable
+          "
+          class="form-control form-control-sm"
+          (click)="send(simvar)"
+        >
+          Send
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
