@@ -1,11 +1,23 @@
 <div class="gauge-container rows">
-  <div class="gauge-slot medium">
+  <div class="gauge-slot fit">
+    <app-a32nx-efis></app-a32nx-efis>
+  </div>
+  <!--
+  <div class="gauge-slot fit">
     <app-a32nx-button
       label="FD"
       [readFrom]="['AUTOPILOT FLIGHT DIRECTOR ACTIVE']"
       [writeTo]="['TOGGLE_FLIGHT_DIRECTOR']"
     ></app-a32nx-button>
   </div>
+  <div class="gauge-slot fit">
+    <app-a32nx-button
+      label="FD"
+      [readFrom]="['BTN_LS_1_FILTER_ACTIVE']"
+      [writeTo]="['BTN_LS_1_FILTER_ACTIVE']"
+    ></app-a32nx-button>
+  </div>
+  -->
   <!--
   <div class="gauge-slot medium">
     <app-airspeed-indicator></app-airspeed-indicator>
@@ -23,13 +35,6 @@
     <div class="gauge-slot fit">
       <app-landing-gear></app-landing-gear>
     </div>
-  </div>
-  <div class="gauge-slot medium">
-    <app-a32nx-button
-      label="FD"
-      [readFrom]="['AUTOPILOT FLIGHT DIRECTOR ACTIVE']"
-      [writeTo]="['TOGGLE_FLIGHT_DIRECTOR']"
-    ></app-a32nx-button>
   </div>
   -->
 </div>

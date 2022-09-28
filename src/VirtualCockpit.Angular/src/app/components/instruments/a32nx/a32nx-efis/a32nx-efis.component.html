@@ -1,0 +1,114 @@
+<div class="a32nx-efis row g-0 text-center">
+  <div class="col col-4">
+    <div class="row g-0">
+      <div class="col">
+        <div class="a32nx-lcd">
+          <div class="row g-0">
+            <div class="col">QNH</div>
+          </div>
+          <div class="row g-0">
+            <div class="col col-3">
+              <button (click)="decreaseQnh()">-</button>
+            </div>
+            <div class="col">{{ properties.qnhValue }}</div>
+            <div class="col col-3">
+              <button (click)="increaseQnh()">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row g-0">
+      <div class="col">Dial</div>
+    </div>
+    <div class="row g-0">
+      <div class="col">
+        <div class="a32nx-button" (click)="toggleFd()">
+          <div class="feedback {{ properties.fdColor }}"></div>
+          <div class="label">FD</div>
+        </div>
+
+        <div class="a32nx-button" (click)="toggleLs()">
+          <div class="feedback {{ properties.lsColor }}"></div>
+          <div class="label">LS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col col-8">
+    <div class="row g-0">
+      <div class="col">
+        <div class="a32nx-button" (click)="setNdFilter(1)">
+          <div class="feedback {{ properties.ndFilterCstrColor }}"></div>
+          <div class="label">CSTR</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdFilter(2)">
+          <div class="feedback {{ properties.ndFilterWptColor }}"></div>
+          <div class="label">WPT</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdFilter(3)">
+          <div class="feedback {{ properties.ndFilterVordColor }}"></div>
+          <div class="label">VOR</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdFilter(4)">
+          <div class="feedback {{ properties.ndFilterNdbColor }}"></div>
+          <div class="label">NDB</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdFilter(5)">
+          <div class="feedback {{ properties.ndFilterArptColor }}"></div>
+          <div class="label">ARPT</div>
+        </div>
+      </div>
+    </div>
+    <div class="row g-0">
+      <div class="col">
+        <div class="a32nx-button" (click)="setNdMode(0)">
+          <div class="feedback {{ properties.ndModeLsColor }}"></div>
+          <div class="label">LS</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdMode(1)">
+          <div class="feedback {{ properties.ndModeVorColor }}"></div>
+          <div class="label">VOR</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdMode(2)">
+          <div class="feedback {{ properties.ndModeNavColor }}"></div>
+          <div class="label">NAV</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdMode(3)">
+          <div class="feedback {{ properties.ndModeArcColor }}"></div>
+          <div class="label">ARC</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdMode(4)">
+          <div class="feedback {{ properties.ndModePlanColor }}"></div>
+          <div class="label">PLAN</div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="a32nx-button" (click)="setNdRange(0)">
+          <div class="feedback {{ properties.ndRange10Color }}"></div>
+          <div class="label">10</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdRange(1)">
+          <div class="feedback {{ properties.ndRange20Color }}"></div>
+          <div class="label">20</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdRange(2)">
+          <div class="feedback {{ properties.ndRange40Color }}"></div>
+          <div class="label">40</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdRange(3)">
+          <div class="feedback {{ properties.ndRange80Color }}"></div>
+          <div class="label">80</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdRange(4)">
+          <div class="feedback {{ properties.ndRange160Color }}"></div>
+          <div class="label">160</div>
+        </div>
+        <div class="a32nx-button" (click)="setNdRange(5)">
+          <div class="feedback {{ properties.ndRange320Color }}"></div>
+          <div class="label">320</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
