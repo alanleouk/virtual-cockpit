@@ -15,29 +15,48 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
       <ul class="navbar-nav me-auto mb-2 mb-md-0">
         <li class="nav-item">
-          <a
-            class="nav-link active"
-            aria-current="page"
-            href="#"
-            [routerLink]=""
-            >Home</a
-          >
+          <a class="nav-link" href="#" routerLink="developer/simvars">Simvars</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" routerLink="developer/cockpit"
-            >Cockpit</a
-          >
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Cockpits</a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li>
+              <a class="dropdown-item" href="#" routerLink="cockpits/a32nx">A32Nx</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" routerLink="cockpits/cessna-172">Cessna 172</a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="#" routerLink="cockpits/developer">Developer</a>
+            </li>
+          </ul>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" routerLink="developer/simvars"
-            >Simvars</a
-          >
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Instruments</a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li>
+              <a class="dropdown-item" href="#" routerLink="instruments/a32nx/efis">A32Nx - EFIS</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" routerLink="instruments/a32nx/fcu">A32Nx - FCU</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="#" routerLink="instruments/a32nx/mcdu">A32Nx - MCDU</a>
+            </li>
+          </ul>
         </li>
       </ul>
+      <div class="d-flex">
+        <button class="btn btn-outline-primary" (click)="toggleFullWidth()">
+          <span *ngIf="!config.fullWidth">Expand</span><span *ngIf="config.fullWidth">Collapse</span>
+        </button>
+      </div>
     </div>
   </div>
 </nav>
 
-<main class="container">
+<main [ngClass]="{ container: !config.fullWidth, 'container-fluid': config.fullWidth }">
   <router-outlet></router-outlet>
 </main>

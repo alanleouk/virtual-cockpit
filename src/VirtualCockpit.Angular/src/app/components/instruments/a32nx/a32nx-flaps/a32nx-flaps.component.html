@@ -1,10 +1,29 @@
-<div class="instrument">
-  <div class="title">Flaps</div>
-  <div class="commands">
-    <button (click)="setValue(0)" [ngClass]="{ active: value === 0 }">0</button>
-    <button (click)="setValue(1)" [ngClass]="{ active: value === 1 }">1</button>
-    <button (click)="setValue(2)" [ngClass]="{ active: value === 2 }">2</button>
-    <button (click)="setValue(3)" [ngClass]="{ active: value === 3 }">3</button>
-    <button (click)="setValue(4)" [ngClass]="{ active: value === 4 }">4</button>
+<div class="a32nx-flaps a32nx-instrument text-center">
+  <div class="row g-0">
+    <div class="col"><label class="a32nx">FLAPS</label></div>
+  </div>
+  <div class="row g-0">
+    <div class="col">
+      <button class="a32nx-button" (click)="setValue(0)">
+        <div class="feedback" [ngClass]="{ green: value === 0 }"></div>
+        <div class="label">0</div>
+      </button>
+      <button class="a32nx-button" (click)="setValue(1)">
+        <div class="feedback" [ngClass]="{ green: value === 1 }"></div>
+        <div class="label">1</div>
+      </button>
+      <button class="a32nx-button" (click)="setValue(2)">
+        <div class="feedback" [ngClass]="{ green: value === 2 }"></div>
+        <div class="label">2</div>
+      </button>
+      <button class="a32nx-button" (click)="setValue(3)">
+        <div class="feedback" [ngClass]="{ green: value === 3 }"></div>
+        <div class="label">3</div>
+      </button>
+      <button class="a32nx-button" (click)="setValue(4)">
+        <div class="feedback" [ngClass]="{ green: value === 4 }"></div>
+        <div class="label">4</div>
+      </button>
+    </div>
   </div>
 </div>

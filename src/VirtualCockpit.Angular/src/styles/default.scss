@@ -78,6 +78,15 @@ table {
   }
 }
 
+.a32nx-instrument {
+  border: 1px solid rgb(142, 213, 255);
+  padding: 4px;
+  margin: 3px;
+  border-radius: 6px;
+
+  background-color: rgb(119, 155, 172);
+}
+
 .a32nx-button {
   display: inline-block;
   background-color: #000;
@@ -86,10 +95,16 @@ table {
   width: 52px;
   height: 52px;
   text-align: center;
+  padding: 0;
+  margin: 0;
 
   &:hover {
     background-color: #333;
     cursor: pointer;
+  }
+
+  &.nofeedback {
+    height: 32px;
   }
 
   .feedback {
@@ -120,12 +135,40 @@ table {
 }
 
 .a32nx-efis {
-  width: 420px;
+  max-width: 420px;
 }
+.a32nx-fcu {
+  max-width: 640px;
+}
+.a32nx-autobrake-gear {
+  max-width: 240px;
+  display: inline-block;
+}
+.a32nx-speed-brakes {
+  max-width: 330px;
+  display: inline-block;
+}
+.a32nx-rudder-trim {
+  max-width: 180px;
+  display: inline-block;
+}
+.a32nx-parking-brake {
+  max-width: 180px;
+  display: inline-block;
+}
+.a32nx-flaps {
+  max-width: 280px;
+  display: inline-block;
+}
+
 .a32nx-lcd {
   background-color: #333;
   border: 1px solid #666;
   border-radius: 6px;
   color: #fa0;
+  font-weight: 700;
+}
+
+label.a32nx {
   font-weight: 700;
 }

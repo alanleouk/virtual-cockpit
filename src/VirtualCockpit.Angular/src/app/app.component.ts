@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ConfigService } from './services/config.service';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +9,9 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'virtual-cockpit';
 
-  constructor() {}
+  constructor(public config: ConfigService) {}
+
+  public toggleFullWidth(): void {
+    this.config.fullWidth = !this.config.fullWidth;
+  }
 }

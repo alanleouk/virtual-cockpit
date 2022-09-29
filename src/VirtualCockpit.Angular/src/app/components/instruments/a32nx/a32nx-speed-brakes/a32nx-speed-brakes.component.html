@@ -1,21 +1,33 @@
-<div class="instrument">
-  <div class="title">Speed Brakes</div>
-  <div class="commands">
-    <button (click)="setSpoilersArmed()" [ngClass]="{ active: armed }">
-      Armed
-    </button>
-    <button (click)="setValue(0)" [ngClass]="{ active: value >= 0 }">0</button>
-    <button (click)="setValue(0.25)" [ngClass]="{ active: value >= 0.25 }">
-      25
-    </button>
-    <button (click)="setValue(0.5)" [ngClass]="{ active: value >= 0.5 }">
-      50
-    </button>
-    <button (click)="setValue(0.75)" [ngClass]="{ active: value >= 0.75 }">
-      75
-    </button>
-    <button (click)="setValue(1)" [ngClass]="{ active: value === 1 }">
-      100
-    </button>
+<div class="a32nx-speed-brakes a32nx-instrument text-center">
+  <div class="row g-0">
+    <div class="col"><label class="a32nx">SPEED BRAKES</label></div>
+  </div>
+  <div class="row g-0">
+    <div class="col">
+      <button class="a32nx-button" (click)="setSpoilersArmed()">
+        <div class="feedback" [ngClass]="{ green: value === 0 }"></div>
+        <div class="label">0</div>
+      </button>
+      <button class="a32nx-button" (click)="setValue(0)">
+        <div class="feedback" [ngClass]="{ green: value >= 0 }"></div>
+        <div class="label">1</div>
+      </button>
+      <button class="a32nx-button" (click)="setValue(0.25)">
+        <div class="feedback" [ngClass]="{ green: value >= 0.25 }"></div>
+        <div class="label">2</div>
+      </button>
+      <button class="a32nx-button" (click)="setValue(0.5)">
+        <div class="feedback" [ngClass]="{ green: value >= 0.5 }"></div>
+        <div class="label">3</div>
+      </button>
+      <button class="a32nx-button" (click)="setValue(0.75)">
+        <div class="feedback" [ngClass]="{ green: value >= 0.75 }"></div>
+        <div class="label">4</div>
+      </button>
+      <button class="a32nx-button" (click)="setValue(1)">
+        <div class="feedback" [ngClass]="{ green: value === 1 }"></div>
+        <div class="label">4</div>
+      </button>
+    </div>
   </div>
 </div>
