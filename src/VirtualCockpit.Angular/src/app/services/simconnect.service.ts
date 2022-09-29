@@ -1,15 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { filter, Observable, Subject } from 'rxjs';
-import { webSocket } from 'rxjs/webSocket';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { AddRequest } from '../models/add-request';
 import { ParamaterType } from '../models/paramater-type';
 import { Simvar } from '../models/simvar';
 import { SimvarRequest } from '../models/simvar-request';
+import { ConfigService } from './config.service';
 
 @Injectable()
 export class SimConnectService {
-  socket = webSocket<SimvarRequest>('ws://localhost:12345/ws');
+  socket: WebSocketSubject<SimvarRequest>;
   subject = new Subject<SimvarRequest>();
 
   public allSimvars: Simvar[] = [
@@ -641,7 +642,10 @@ export class SimConnectService {
     },
   ];
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private config: ConfigService) {
+    this.socket = webSocket<SimvarRequest>(
+      'ws://' + config.socksHostAndPort + '/ws'
+    );
     this.socket.subscribe(
       (msg) => this.subject.next(msg),
       (err) => console.log(err),
@@ -658,30 +662,51 @@ export class SimConnectService {
   }
 
   setVariable(name: string, value: number): Observable<any> {
-    return this.http.put('http://localhost:12345/simvar', { name, value });
+    return this.http.put('http://' + this.config.socksHostAndPort + '/simvar', {
+      name,
+      value,
+    });
   }
 
   connect(): Observable<any> {
-    return this.http.post('http://localhost:12345/connect', {});
+    return this.http.post(
+      'http://' + this.config.socksHostAndPort + '/connect',
+      {}
+    );
   }
 
   disconnect(): Observable<any> {
-    return this.http.post('http://localhost:12345/disconnect', {});
+    return this.http.post(
+      'http://' + this.config.socksHostAndPort + '/disconnect',
+      {}
+    );
   }
 
   reset(): Observable<any> {
-    return this.http.post('http://localhost:12345/reset', {});
+    return this.http.post(
+      'http://' + this.config.socksHostAndPort + '/reset',
+      {}
+    );
   }
 
   add(requests: AddRequest[]): Observable<any> {
-    return this.http.post('http://localhost:12345/add', requests);
+    return this.http.post(
+      'http://' + this.config.socksHostAndPort + '/add',
+      requests
+    );
   }
 
   addAll(): Observable<any> {
-    return this.http.post('http://localhost:12345/add', this.allSimvars);
+    return this.http.post(
+      'http://' + this.config.socksHostAndPort + '/add',
+      this.allSimvars
+    );
   }
 
   send(): Observable<any> {
-    return this.http.post('http://localhost:12345/send', {});
+    return this.http.post(
+      'http://' + this.config.socksHostAndPort + '/send',
+      {}
+    );
   }
 }
