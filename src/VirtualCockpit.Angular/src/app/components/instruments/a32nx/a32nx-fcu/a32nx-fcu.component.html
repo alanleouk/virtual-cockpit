@@ -41,33 +41,48 @@
       </div>
     </div>
   </div>
-  <div class="row g-0">
+  <div class="row g-0 mt-1">
     <div class="col col-5">
       <div class="row g-0">
         <div class="col col-6">
-          <button class="a32nx-button nofeedback"><div class="label">UP</div></button>
-          <button class="a32nx-button nofeedback"><div class="label">UP+</div></button>
-          <button class="a32nx-button nofeedback"><div class="label">DN</div></button>
-          <button class="a32nx-button nofeedback"><div class="label">DN+</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetLateralSpeed(1)"><div class="label">UP</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetLateralSpeed(10)"><div class="label">UP+</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetLateralSpeed(-1)"><div class="label">DN</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetLateralSpeed(-10)"><div class="label">DN</div></button>
+          <button class="a32nx-button nofeedback" (click)="sendEvent('A32NX.FCU_SPD_PUSH')"><div class="label">PUSH</div></button>
+          <button class="a32nx-button nofeedback" (click)="sendEvent('A32NX.FCU_SPD_PULL')"><div class="label">PULL</div></button>
         </div>
         <div class="col col-6">
-          <button class="a32nx-button nofeedback"><div class="label">UP</div></button>
-          <button class="a32nx-button nofeedback"><div class="label">UP+</div></button>
-          <button class="a32nx-button nofeedback"><div class="label">DN</div></button>
-          <button class="a32nx-button nofeedback"><div class="label">DN+</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetHeading(1)"><div class="label">UP</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetHeading(10)"><div class="label">UP+</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetHeading(-1)"><div class="label">DN</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetHeading(-10)"><div class="label">DN+</div></button>
+          <button class="a32nx-button nofeedback" (click)="sendEvent('A32NX.FCU_HDG_PUSH')"><div class="label">PUSH</div></button>
+          <button class="a32nx-button nofeedback" (click)="sendEvent('A32NX.FCU_HDG_PULL')"><div class="label">PULL</div></button>
+          <div class="a32nx-button mt-1" (click)="sendEvent('A32NX.FCU_LOC_PUSH')">
+            <div class="feedback {{ properties.locColor }}"></div>
+            <div class="label">LOC</div>
+          </div>
         </div>
       </div>
     </div>
     <div class="col col-2">
       <div class="row g-0">
+        <div class="col d-flex flex-column align-items-center">
+          <label class="input">HDG TRK</label>
+          <button class="a32nx-button nofeedback" (click)="sendEvent('A32NX.FCU_TRK_FPA_TOGGLE_PUSH')"><div class="label"></div></button>
+          <label class="input">V/S FPA</label>
+        </div>
+      </div>
+      <div class="row g-0">
         <div class="col">
-          <div class="a32nx-button" (click)="(null)">
+          <div class="a32nx-button" (click)="sendEvent('A32NX.FCU_AP_1_PUSH')">
             <div class="feedback {{ properties.ap1Color }}"></div>
             <div class="label">AP1</div>
           </div>
         </div>
         <div class="col">
-          <div class="a32nx-button" (click)="(null)">
+          <div class="a32nx-button" (click)="sendEvent('A32NX.FCU_AP_2_PUSH')">
             <div class="feedback {{ properties.ap2Color }}"></div>
             <div class="label">AP2</div>
           </div>
@@ -75,7 +90,7 @@
       </div>
       <div class="row g-0">
         <div class="col">
-          <div class="a32nx-button" (click)="(null)">
+          <div class="a32nx-button" (click)="sendEvent('A32NX.FCU_ATHR_PUSH')">
             <div class="feedback {{ properties.athrColor }}"></div>
             <div class="label">A/THR</div>
           </div>
@@ -85,16 +100,28 @@
     <div class="col col-5">
       <div class="row g-0">
         <div class="col col-6">
-          <button class="a32nx-button nofeedback"><div class="label">UP</div></button>
-          <button class="a32nx-button nofeedback"><div class="label">UP+</div></button>
-          <button class="a32nx-button nofeedback"><div class="label">DN</div></button>
-          <button class="a32nx-button nofeedback"><div class="label">DN+</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetAltitude(100)"><div class="label">UP</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetAltitude(1000)"><div class="label">UP+</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetAltitude(-100)"><div class="label">DN</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetAltitude(-1000)"><div class="label">DN+</div></button>
+          <button class="a32nx-button nofeedback" (click)="sendEvent('A32NX.FCU_ALT_PUSH')"><div class="label">PUSH</div></button>
+          <button class="a32nx-button nofeedback" (click)="sendEvent('A32NX.FCU_ALT_PULL')"><div class="label">PULL</div></button>
+          <div class="a32nx-button mt-1" (click)="sendEvent('A32NX.FCU_EXPED_PUSH')">
+            <div class="feedback {{ properties.expedColor }}"></div>
+            <div class="label">EXPED</div>
+          </div>
         </div>
         <div class="col col-6">
-          <button class="a32nx-button nofeedback"><div class="label">UP</div></button>
-          <button class="a32nx-button nofeedback"><div class="label">UP+</div></button>
-          <button class="a32nx-button nofeedback"><div class="label">DN</div></button>
-          <button class="a32nx-button nofeedback"><div class="label">DN+</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetVerticalSpeed(1)"><div class="label">UP</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetVerticalSpeed(10)"><div class="label">UP+</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetVerticalSpeed(-1)"><div class="label">DN</div></button>
+          <button class="a32nx-button nofeedback" (click)="offsetVerticalSpeed(-10)"><div class="label">DN+</div></button>
+          <button class="a32nx-button nofeedback" (click)="sendEvent('A32NX.FCU_VS_PUSH')"><div class="label">PUSH</div></button>
+          <button class="a32nx-button nofeedback" (click)="sendEvent('A32NX.FCU_VS_PULL')"><div class="label">PULL</div></button>
+          <div class="a32nx-button mt-1" (click)="sendEvent('A32NX.FCU_APPR_PUSH')">
+            <div class="feedback {{ properties.apprColor }}"></div>
+            <div class="label">APPR</div>
+          </div>
         </div>
       </div>
     </div>

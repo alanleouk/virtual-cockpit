@@ -621,9 +621,27 @@ export class SimConnectService {
       category: 'Rudder Trim',
       paramaterType: ParamaterType.SimVar,
       name: 'RUDDER TRIM PCT',
+      description: 'Values: -1.0=20° left, 1.0=20° right',
       units: 'number',
       precision: 2,
-      writable: true,
+      writable: false,
+    },
+    {
+      category: 'Rudder Trim',
+      paramaterType: ParamaterType.SimVar,
+      name: 'RUDDER TRIM PCT',
+      description: 'Values: -0.35..0.35; Radians: 0.3490×180°/π = 19.99°',
+      units: 'number',
+      precision: 2,
+      writable: false,
+    },
+    {
+      category: 'Rudder Trim',
+      paramaterType: ParamaterType.KEvent,
+      name: 'RUDDER TRIM SET',
+      description: 'Values: -16383..16384',
+      units: 'number',
+      precision: 0,
     },
     // Throttle
     {
