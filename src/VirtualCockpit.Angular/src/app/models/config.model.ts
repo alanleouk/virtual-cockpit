@@ -1,5 +1,15 @@
-export interface IConig {
-  fullWidth: boolean;
-  socksHostAndPort: string;
-  a32nxMcduUrl: string;
+import { ConfigCockpits } from './config-cockpits';
+import { ConfigLayout } from './config-layout';
+import { ConfigNetwork } from './config-network';
+
+export class Config {
+  layout: ConfigLayout;
+  network: ConfigNetwork;
+  cockpits: ConfigCockpits;
+
+  constructor() {
+    this.layout = new ConfigLayout();
+    this.network = new ConfigNetwork();
+    this.cockpits = new ConfigCockpits();
+  }
 }

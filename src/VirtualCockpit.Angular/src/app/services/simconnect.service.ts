@@ -643,9 +643,7 @@ export class SimConnectService {
   ];
 
   constructor(private http: HttpClient, private config: ConfigService) {
-    this.socket = webSocket<SimvarRequest>(
-      'ws://' + config.socksHostAndPort + '/ws'
-    );
+    this.socket = webSocket<SimvarRequest>(config.current.network.wsUrl);
     this.socket.subscribe(
       (msg) => this.subject.next(msg),
       (err) => console.log(err),
@@ -662,51 +660,33 @@ export class SimConnectService {
   }
 
   setVariable(name: string, value: number): Observable<any> {
-    return this.http.put('http://' + this.config.socksHostAndPort + '/simvar', {
+    return this.http.put(this.config.current.network.serviceUrl + '/simvar', {
       name,
       value,
     });
   }
 
   connect(): Observable<any> {
-    return this.http.post(
-      'http://' + this.config.socksHostAndPort + '/connect',
-      {}
-    );
+    return this.http.post(this.config.current.network.serviceUrl + '/connect', {});
   }
 
   disconnect(): Observable<any> {
-    return this.http.post(
-      'http://' + this.config.socksHostAndPort + '/disconnect',
-      {}
-    );
+    return this.http.post(this.config.current.network.serviceUrl + '/disconnect', {});
   }
 
   reset(): Observable<any> {
-    return this.http.post(
-      'http://' + this.config.socksHostAndPort + '/reset',
-      {}
-    );
+    return this.http.post(this.config.current.network.serviceUrl + '/reset', {});
   }
 
   add(requests: AddRequest[]): Observable<any> {
-    return this.http.post(
-      'http://' + this.config.socksHostAndPort + '/add',
-      requests
-    );
+    return this.http.post(this.config.current.network.serviceUrl + '/add', requests);
   }
 
   addAll(): Observable<any> {
-    return this.http.post(
-      'http://' + this.config.socksHostAndPort + '/add',
-      this.allSimvars
-    );
+    return this.http.post(this.config.current.network.serviceUrl + '/add', this.allSimvars);
   }
 
   send(): Observable<any> {
-    return this.http.post(
-      'http://' + this.config.socksHostAndPort + '/send',
-      {}
-    );
+    return this.http.post(this.config.current.network.serviceUrl + '/send', {});
   }
 }

@@ -9,6 +9,6 @@ export class HomeComponent implements OnInit {
   constructor(private config: ConfigService) {}
 
   ngOnInit(): void {
-    this.config.fullWidth = false;
+    this.config.current.layout.fullWidth = false;
   }
 }

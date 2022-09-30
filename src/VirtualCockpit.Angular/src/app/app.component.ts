@@ -12,6 +12,6 @@ export class AppComponent {
   constructor(public config: ConfigService) {}
 
   public toggleFullWidth(): void {
-    this.config.fullWidth = !this.config.fullWidth;
+    this.config.current.layout.fullWidth = !this.config.current.layout.fullWidth;
   }
 }

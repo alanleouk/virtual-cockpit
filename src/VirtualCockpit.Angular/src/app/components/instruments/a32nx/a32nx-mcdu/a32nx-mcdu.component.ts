@@ -16,7 +16,7 @@ export class A32NxMcduComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.frameElement) {
-      this.frameElement.nativeElement.src = this.config.a32nxMcduUrl;
+      this.frameElement.nativeElement.src = this.config.current.cockpits.a3nx.mcduUrl;
     }
   }
 }
