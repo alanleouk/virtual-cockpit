@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
-import { ParamaterType } from 'src/app/models/paramater-type';
 import { SimvarRequest } from 'src/app/models/simvar-request';
 import { SimConnectService } from 'src/app/services/simconnect.service';
 
@@ -25,8 +24,8 @@ export class A32NxSpeedBrakesComponent implements OnInit {
 
   ngOnInit(): void {
     this.rangeValueChangedSubject.pipe(distinctUntilChanged(), debounceTime(200)).subscribe((rangeValue) => {
-      this.value = this.maxValue - rangeValue;
-      this.rangeValue = rangeValue;
+      // this.value = this.maxValue - rangeValue;
+      // this.rangeValue = rangeValue;
       this.setValue(this.value);
     });
 

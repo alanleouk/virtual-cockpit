@@ -28,10 +28,26 @@
       </button>
     </div>
     <div class="col">
-      <input type="range" orient="vertical" class="lever" min="-25" max="100" [(ngModel)]="properties.value1" list="rangeDetents" />
+      <input
+        type="range"
+        orient="vertical"
+        class="lever"
+        min="{{ properties.minValue }}"
+        max="{{ properties.maxValue }}"
+        [(ngModel)]="properties.value1"
+        list="rangeDetents"
+      />
     </div>
     <div class="col">
-      <input type="range" orient="vertical" class="lever" min="-25" max="100" [(ngModel)]="properties.value2" list="rangeDetents" />
+      <input
+        type="range"
+        orient="vertical"
+        class="lever"
+        min="{{ properties.minValue }}"
+        max="{{ properties.maxValue }}"
+        [(ngModel)]="properties.value2"
+        list="rangeDetents"
+      />
     </div>
     <datalist id="rangeDetents">
       <option value="0"></option>

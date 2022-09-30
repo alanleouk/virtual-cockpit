@@ -3,15 +3,20 @@ import { BehaviorSubject, debounceTime, distinctUntilChanged, switchMap } from '
 import { SimvarRequest } from 'src/app/models/simvar-request';
 import { SimConnectService } from 'src/app/services/simconnect.service';
 
+const MIN_VALUE = 25;
+const MAX_VALUE = 100;
+
 export class A32NxThrustProperties {
-  locked: boolean;
-  value1: number;
-  value2: number;
+  public locked: boolean;
+  public minValue = MIN_VALUE;
+  public maxValue = MAX_VALUE;
+  public value1: number;
+  public value2: number;
 
   constructor() {
     this.locked = true;
-    this.value1 = 50;
-    this.value2 = 50;
+    this.value1 = 0;
+    this.value2 = 0;
   }
 }
 
@@ -32,18 +37,18 @@ export class A32NxThrustComponent implements OnInit {
 
   ngOnInit(): void {
     this.rangeValue1ChangedSubject.pipe(distinctUntilChanged(), debounceTime(200)).subscribe((value) => {
-      this.properties.value1 = value;
+      // this.properties.value1 = value;
       this.setValue1(value);
       if (this.properties.locked) {
-        this.properties.value2 = value;
+        // this.properties.value2 = value;
         this.setValue2(value);
       }
     });
     this.rangeValue2ChangedSubject.pipe(distinctUntilChanged(), debounceTime(200)).subscribe((value) => {
-      this.properties.value2 = value;
+      // this.properties.value2 = value;
       this.setValue2(value);
       if (this.properties.locked) {
-        this.properties.value1 = value;
+        // this.properties.value1 = value;
         this.setValue1(value);
       }
     });
