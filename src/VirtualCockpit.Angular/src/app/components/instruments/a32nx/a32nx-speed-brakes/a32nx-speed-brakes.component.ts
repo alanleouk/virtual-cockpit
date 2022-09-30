@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { ParamaterType } from 'src/app/models/paramater-type';
+import { SimvarRequest } from 'src/app/models/simvar-request';
 import { SimConnectService } from 'src/app/services/simconnect.service';
 
 const MAX_VALUE = 16384;
@@ -11,7 +12,7 @@ const MAX_VALUE = 16384;
 })
 export class A32NxSpeedBrakesComponent implements OnInit {
   readFrom = ['A32NX_SPOILERS_HANDLE_POSITION', 'A32NX_SPOILERS_ARMED', 'SPOILERS ARMED'];
-  writeTo = [];
+  writeTo = ['SPOILERS_SET', 'SPOILERS_ARM_TOGGLE'];
 
   private rangeValueChangedSubject = new BehaviorSubject<number>(0);
 
@@ -29,63 +30,27 @@ export class A32NxSpeedBrakesComponent implements OnInit {
       this.setValue(this.value);
     });
 
-    this.simConnect.subscribeTo(this.readFrom).subscribe((result) => {
-      switch (result.name) {
-        case 'A32NX_SPOILERS_HANDLE_POSITION':
-          this.value = result.valueAsDecimal * this.maxValue;
-          this.rangeValue = this.maxValue - this.value;
-          break;
-        case 'A32NX_SPOILERS_ARMED':
-        case 'SPOILERS ARMED':
-          this.armed = result.valueAsDecimal > 0;
-          break;
-      }
-    });
+    this.simConnect.subscribeTo(this.readFrom).subscribe((request) => this.parseSimvarRequest(request));
 
-    this.simConnect
-      .add([
-        {
-          paramaterType: ParamaterType.LVar,
-          name: 'A32NX_SPOILERS_HANDLE_POSITION',
-          units: 'number',
-          precision: 2,
-        },
-        {
-          paramaterType: ParamaterType.SimVar,
-          name: 'SPOILERS HANDLE POSITION',
-          units: 'number',
-          precision: 0,
-        },
-        {
-          paramaterType: ParamaterType.LVar,
-          name: 'A32NX_SPOILERS_ARMED',
-          units: 'bool',
-          precision: 0,
-        },
-        {
-          paramaterType: ParamaterType.SimVar,
-          name: 'SPOILERS ARMED',
-          units: 'number',
-          precision: 0,
-        },
-        {
-          paramaterType: ParamaterType.KEvent,
-          name: 'SPOILERS_ARM_TOGGLE',
-          units: 'number',
-          precision: 0,
-        },
-        {
-          paramaterType: ParamaterType.KEvent,
-          name: 'SPOILERS_SET',
-          units: 'number',
-          precision: 0,
-        },
-      ])
-      .pipe(
-        switchMap((_) => this.simConnect.connect()),
-        switchMap((_) => this.simConnect.send())
-      )
-      .subscribe();
+    const simVars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
+
+    this.simConnect.add(simVars).pipe(
+      switchMap((_) => this.simConnect.connect()),
+      switchMap((_) => this.simConnect.send())
+    );
+  }
+
+  parseSimvarRequest(request: SimvarRequest): void {
+    switch (request.name) {
+      case 'A32NX_SPOILERS_HANDLE_POSITION':
+        this.value = request.valueAsDecimal * this.maxValue;
+        this.rangeValue = this.maxValue - this.value;
+        break;
+      case 'A32NX_SPOILERS_ARMED':
+      case 'SPOILERS ARMED':
+        this.armed = request.valueAsDecimal > 0;
+        break;
+    }
   }
 
   public updateValue(value: number) {

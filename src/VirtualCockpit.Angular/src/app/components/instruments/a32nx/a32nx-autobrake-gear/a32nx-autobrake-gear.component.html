@@ -6,19 +6,19 @@
     <div class="col">
       <div class="a32nx-button">
         <div class="feedback {{ properties.ldg1Color }}"></div>
-        <div class="label">1</div>
+        <div class="label">L</div>
       </div>
     </div>
     <div class="col">
       <div class="a32nx-button">
         <div class="feedback {{ properties.ldg2Color }}"></div>
-        <div class="label">2</div>
+        <div class="label">C</div>
       </div>
     </div>
     <div class="col">
       <div class="a32nx-button">
         <div class="feedback {{ properties.ldg3Color }}"></div>
-        <div class="label">3</div>
+        <div class="label">R</div>
       </div>
     </div>
   </div>
@@ -27,19 +27,19 @@
   </div>
   <div class="row g-0">
     <div class="col">
-      <div class="a32nx-button">
+      <div class="a32nx-button" (click)="sendEvent('A32NX.AUTOBRAKE_SET', 1)">
         <div class="feedback {{ properties.ab1Color }}"></div>
         <div class="label">LO</div>
       </div>
     </div>
     <div class="col">
-      <div class="a32nx-button">
+      <div class="a32nx-button" (click)="sendEvent('A32NX.AUTOBRAKE_SET', 2)">
         <div class="feedback {{ properties.ab2Color }}"></div>
         <div class="label">MED</div>
       </div>
     </div>
     <div class="col">
-      <div class="a32nx-button">
+      <div class="a32nx-button" (click)="sendEvent('A32NX.AUTOBRAKE_SET', 3)">
         <div class="feedback {{ properties.ab3Color }}"></div>
         <div class="label">MAX</div>
       </div>
@@ -50,13 +50,13 @@
   </div>
   <div class="row g-0">
     <div class="col col-12">
-      <div class="a32nx-button">
+      <div class="a32nx-button" (click)="sendEvent('GEAR_UP')">
         <div class="feedback {{ properties.gearUpColor }}"></div>
         <div class="label">UP</div>
       </div>
     </div>
     <div class="col col-12">
-      <div class="a32nx-button">
+      <div class="a32nx-button" (click)="sendEvent('GEAR_DOWN')">
         <div class="feedback {{ properties.gearDownColor }}"></div>
         <div class="label">DOWN</div>
       </div>

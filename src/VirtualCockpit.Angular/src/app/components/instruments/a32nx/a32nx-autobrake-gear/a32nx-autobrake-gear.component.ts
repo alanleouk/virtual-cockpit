@@ -36,22 +36,17 @@ export class A32NxAutobrakeGearProperties {
 export class A32NxAutobrakeGearComponent implements OnInit {
   properties = new A32NxAutobrakeGearProperties();
 
-  readFrom = ['DEBUG COMMAND'];
-  writeTo = ['DEBUG COMMAND'];
+  readFrom = ['GEAR HANDLE POSITION', 'GEAR LEFT POSITION', 'GEAR CENTER POSITION', 'GEAR RIGHT POSITION', 'A32NX_AUTOBRAKES_ARMED_MODE'];
+  writeTo = ['GEAR_UP', 'GEAR_DOWN', 'GEAR HANDLE POSITION', 'A32NX.AUTOBRAKE_SET'];
 
   public value: number = 0;
 
   constructor(private simConnect: SimConnectService) {}
 
   ngOnInit(): void {
-    this.simConnect
-      .subscribeTo(this.readFrom)
-      .subscribe((request) => this.parseSimvarRequest(request));
+    this.simConnect.subscribeTo(this.readFrom).subscribe((request) => this.parseSimvarRequest(request));
 
-    const simVars = this.simConnect.allSimvars.filter(
-      (item) =>
-        this.readFrom.includes(item.name) || this.writeTo.includes(item.name)
-    );
+    const simVars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
 
     this.simConnect
       .add(simVars)
@@ -64,6 +59,63 @@ export class A32NxAutobrakeGearComponent implements OnInit {
 
   parseSimvarRequest(request: SimvarRequest): void {
     switch (request.name) {
+      case 'GEAR HANDLE POSITION':
+        this.properties.gearDownColor = 'default';
+        this.properties.gearUpColor = 'default';
+        if (request.valueAsDecimal === 1) {
+          this.properties.gearDownColor = 'green';
+        } else {
+          this.properties.gearUpColor = 'green';
+        }
+        break;
+      case 'GEAR LEFT POSITION':
+        if (request.valueAsDecimal < 50) {
+          this.properties.ldg1Color = 'default';
+        } else if (request.valueAsDecimal < 100) {
+          this.properties.ldg1Color = 'amber';
+        } else {
+          this.properties.ldg1Color = 'green';
+        }
+        break;
+      case 'GEAR CENTER POSITION':
+        if (request.valueAsDecimal < 50) {
+          this.properties.ldg2Color = 'default';
+        } else if (request.valueAsDecimal < 100) {
+          this.properties.ldg2Color = 'amber';
+        } else {
+          this.properties.ldg2Color = 'green';
+        }
+        break;
+      case 'GEAR RIGHT POSITION':
+        if (request.valueAsDecimal < 50) {
+          this.properties.ldg3Color = 'default';
+        } else if (request.valueAsDecimal < 100) {
+          this.properties.ldg3Color = 'amber';
+        } else {
+          this.properties.ldg3Color = 'green';
+        }
+        break;
+      case 'A32NX_AUTOBRAKES_ARMED_MODE':
+        this.properties.ab1Color = 'default';
+        this.properties.ab2Color = 'default';
+        this.properties.ab3Color = 'default';
+
+        switch (request.valueAsDecimal) {
+          case 1:
+            this.properties.ab1Color = 'green';
+            break;
+          case 2:
+            this.properties.ab2Color = 'green';
+            break;
+          case 3:
+            this.properties.ab3Color = 'green';
+            break;
+        }
+        break;
     }
+  }
+
+  sendEvent(name: string, value: number = 0) {
+    this.simConnect.setVariable(name, value).subscribe();
   }
 }
