@@ -1,9 +1,9 @@
 <div class="a32nx-cockpit">
   <div class="row g-0 text-center">
-    <div class="col col-4">
+    <div class="col col-4 d-flex justify-content-center">
       <app-a32nx-efis></app-a32nx-efis>
     </div>
-    <div class="col col-8">
+    <div class="col col-8 d-flex justify-content-center">
       <app-a32nx-fcu></app-a32nx-fcu>
     </div>
   </div>
@@ -13,29 +13,23 @@
     </div>
     <div class="col col-8">
       <div class="row g-0 text-center">
-        <div class="col">
+        <div class="col d-flex justify-content-center">
           <app-a32nx-trim></app-a32nx-trim>
-        </div>
-        <div class="col">
           <app-a32nx-thrust></app-a32nx-thrust>
-        </div>
-        <div class="col">
           <app-a32nx-autobrake-gear></app-a32nx-autobrake-gear>
         </div>
       </div>
       <div class="row g-0 text-center">
-        <div class="col">
+        <div class="col d-flex justify-content-center">
           <app-a32nx-speed-brakes></app-a32nx-speed-brakes>
-        </div>
-        <div class="col">
           <div>
-            <app-a32nx-rudder-trim></app-a32nx-rudder-trim>
+            <div>
+              <app-a32nx-rudder-trim></app-a32nx-rudder-trim>
+            </div>
+            <div>
+              <app-a32nx-parking-brake></app-a32nx-parking-brake>
+            </div>
           </div>
-          <div>
-            <app-a32nx-parking-brake></app-a32nx-parking-brake>
-          </div>
-        </div>
-        <div class="col">
           <app-a32nx-flaps></app-a32nx-flaps>
         </div>
       </div>

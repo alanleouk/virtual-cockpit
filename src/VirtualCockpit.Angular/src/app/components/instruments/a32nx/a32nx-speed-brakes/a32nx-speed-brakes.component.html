@@ -3,31 +3,38 @@
     <div class="col"><label class="a32nx">SPEED BRAKES</label></div>
   </div>
   <div class="row g-0">
-    <div class="col">
+    <div class="col d-flex flex-column align-items-center">
       <button class="a32nx-button" (click)="setSpoilersArmed()">
         <div class="feedback" [ngClass]="{ green: value === 0 }"></div>
-        <div class="label">0</div>
+        <div class="label">ARMD</div>
       </button>
-      <button class="a32nx-button" (click)="setValue(0)">
+      <button class="a32nx-button" (click)="updateValue(0)">
         <div class="feedback" [ngClass]="{ green: value >= 0 }"></div>
-        <div class="label">1</div>
+        <div class="label">NONE</div>
       </button>
-      <button class="a32nx-button" (click)="setValue(0.25)">
-        <div class="feedback" [ngClass]="{ green: value >= 0.25 }"></div>
-        <div class="label">2</div>
+      <button class="a32nx-button" (click)="updateValue(0.25 * maxValue)">
+        <div class="feedback" [ngClass]="{ green: value >= 0.25 * maxValue }"></div>
+        <div class="label">0.25</div>
       </button>
-      <button class="a32nx-button" (click)="setValue(0.5)">
-        <div class="feedback" [ngClass]="{ green: value >= 0.5 }"></div>
-        <div class="label">3</div>
+      <button class="a32nx-button" (click)="updateValue(0.5 * maxValue)">
+        <div class="feedback" [ngClass]="{ green: value >= 0.5 * maxValue }"></div>
+        <div class="label">0.50</div>
       </button>
-      <button class="a32nx-button" (click)="setValue(0.75)">
-        <div class="feedback" [ngClass]="{ green: value >= 0.75 }"></div>
-        <div class="label">4</div>
+      <button class="a32nx-button" (click)="updateValue(0.75 * maxValue)">
+        <div class="feedback" [ngClass]="{ green: value >= 0.75 * maxValue }"></div>
+        <div class="label">0.75</div>
       </button>
-      <button class="a32nx-button" (click)="setValue(1)">
-        <div class="feedback" [ngClass]="{ green: value === 1 }"></div>
-        <div class="label">4</div>
+      <button class="a32nx-button" (click)="updateValue(maxValue)">
+        <div class="feedback" [ngClass]="{ green: value === maxValue }"></div>
+        <div class="label">FULL</div>
       </button>
+    </div>
+    <div class="col d-flex flex-column align-items-center">
+      <button class="a32nx-button mb-2" (click)="setSpoilersArmed()">
+        <div class="feedback" [ngClass]="{ green: value === 0 }"></div>
+        <div class="label">ARMD</div>
+      </button>
+      <input type="range" orient="vertical" class="lever" min="0" max="{{ maxValue }}" [(ngModel)]="rangeValue" (ngModelChange)="rangeValueChanged($event)" />
     </div>
   </div>
 </div>

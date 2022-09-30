@@ -4,7 +4,15 @@ import { SimvarRequest } from 'src/app/models/simvar-request';
 import { SimConnectService } from 'src/app/services/simconnect.service';
 
 export class A32NxThrustProperties {
-  constructor() {}
+  locked: boolean;
+  value1: number;
+  value2: number;
+
+  constructor() {
+    this.locked = true;
+    this.value1 = 50;
+    this.value2 = 50;
+  }
 }
 
 @Component({
@@ -13,23 +21,17 @@ export class A32NxThrustProperties {
 })
 export class A32NxThrustComponent implements OnInit {
   properties = new A32NxThrustProperties();
+  detentHit: number = 0;
 
   readFrom = ['DEBUG COMMAND'];
   writeTo = ['DEBUG COMMAND'];
 
-  public value: number = 0;
-
   constructor(private simConnect: SimConnectService) {}
 
   ngOnInit(): void {
-    this.simConnect
-      .subscribeTo(this.readFrom)
-      .subscribe((request) => this.parseSimvarRequest(request));
+    this.simConnect.subscribeTo(this.readFrom).subscribe((request) => this.parseSimvarRequest(request));
 
-    const simVars = this.simConnect.allSimvars.filter(
-      (item) =>
-        this.readFrom.includes(item.name) || this.writeTo.includes(item.name)
-    );
+    const simVars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
 
     this.simConnect
       .add(simVars)
@@ -43,5 +45,10 @@ export class A32NxThrustComponent implements OnInit {
   parseSimvarRequest(request: SimvarRequest): void {
     switch (request.name) {
     }
+  }
+
+  setValue(value: number) {
+    this.properties.value1 = value;
+    this.properties.value2 = value;
   }
 }

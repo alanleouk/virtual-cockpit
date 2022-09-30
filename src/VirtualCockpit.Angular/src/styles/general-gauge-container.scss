@@ -1,0 +1,13 @@
+.general-gauge-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  &.rows {
+    flex-direction: row;
+  }
+
+  &.columns {
+    flex-direction: column;
+  }
+}

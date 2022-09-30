@@ -1,0 +1,18 @@
+.a32nx-instrument {
+  border: 1px solid rgb(142, 213, 255);
+  padding: 4px;
+  margin: 3px;
+  border-radius: 6px;
+
+  background-color: #889db5;
+
+  label.input {
+    display: flex;
+    justify-content: center;
+    font-weight: 700;
+
+    input[type="checkbox"] {
+      margin-right: 4px;
+    }
+  }
+}

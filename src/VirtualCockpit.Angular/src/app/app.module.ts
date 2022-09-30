@@ -99,6 +99,11 @@ import { SvgService } from './services/svg.service';
         component: A32NxMcduComponent,
       },
       {
+        path: 'instruments/a32nx/thrust',
+        pathMatch: 'full',
+        component: A32NxThrustComponent,
+      },
+      {
         path: 'developer/simvars',
         pathMatch: 'full',
         component: SimvarsComponent,

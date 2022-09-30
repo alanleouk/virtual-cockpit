@@ -1,177 +1,20 @@
-body {
-  min-height: 75rem;
-  padding-top: 4.5rem;
-}
-
-table {
-  width: 100%;
-
-  thead {
-    th {
-      text-align: left;
-    }
-  }
-
-  tbody {
-    td {
-      text-align: left;
-    }
-  }
-}
-
-.instrument {
-  .title {
-    font-weight: bold;
-    font-size: 12px;
-    color: #000;
-  }
-
-  .values {
-    font-weight: bold;
-  }
-
-  .commands {
-    button {
-      padding: 2px 6px;
-      margin: 1px;
-      font-size: 9px;
-
-      background-color: lightsteelblue;
-      border: 1px solid gray;
-      border-radius: 4px;
-      cursor: pointer;
-
-      &.active {
-        background-color: lightgreen;
-      }
-    }
-
-    button:hover {
-      background-color: white;
-    }
-  }
-}
-
-.gauge-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-
-  &.rows {
-    flex-direction: row;
-  }
-
-  &.columns {
-    flex-direction: column;
-  }
-}
-
-.gauge-slot {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 4px;
-  flex-direction: row;
-
-  &.medium {
-    width: 300px;
-    height: 300px;
-  }
-}
-
-.a32nx-instrument {
-  border: 1px solid rgb(142, 213, 255);
-  padding: 4px;
-  margin: 3px;
-  border-radius: 6px;
-
-  background-color: #889db5;
-}
-
-.a32nx-button {
-  display: inline-block;
-  background-color: #000;
-  border: 1px solid #333;
-  border-radius: 3px;
-  width: 52px;
-  height: 52px;
-  text-align: center;
-  padding: 0;
-  margin: 0;
-
-  &:hover {
-    background-color: #333;
-    cursor: pointer;
-  }
-
-  &.nofeedback {
-    height: 32px;
-  }
-
-  .feedback {
-    width: 40px;
-    height: 16px;
-    background-color: #333;
-    border: 1px solid #666;
-    border-radius: 3px;
-    margin: 3px 5px;
-
-    &.red {
-      background-color: #f00;
-    }
-    &.amber {
-      background-color: #f90;
-    }
-    &.green {
-      background-color: #0f0;
-    }
-  }
-
-  .label {
-    padding: 3px 0;
-    color: #fa0;
-    font-weight: 700;
-    font-size: 14px;
-  }
-}
-
-.a32nx-efis {
-  max-width: 420px;
-}
-.a32nx-fcu {
-  max-width: 640px;
-}
-.a32nx-autobrake-gear {
-  max-width: 240px;
-  display: inline-block;
-}
-.a32nx-speed-brakes {
-  max-width: 330px;
-  display: inline-block;
-}
-.a32nx-rudder-trim {
-  max-width: 180px;
-  display: inline-block;
-}
-.a32nx-parking-brake {
-  max-width: 180px;
-  display: inline-block;
-}
-.a32nx-flaps {
-  max-width: 280px;
-  display: inline-block;
-}
-.a32nx-mcdu {
-  display: inline-block;
-}
-
-.a32nx-lcd {
-  background-color: #333;
-  border: 1px solid #666;
-  border-radius: 6px;
-  color: #fa0;
-  font-weight: 700;
-}
-
-label.a32nx {
-  font-weight: 700;
-}
+@import "reset";
+//
+@import "general-instrument";
+@import "general-gauge-container";
+@import "general-gauge-slot";
+//
+@import "a32nx";
+@import "a32nx-thrust";
+@import "a32nx-trim";
+@import "a32nx-efis";
+@import "a32nx-fcu";
+@import "a32nx-autobrake-gear";
+@import "a32nx-speed-brakes";
+@import "a32nx-rudder-trim";
+@import "a32nx-parking-brake";
+@import "a32nx-flaps";
+@import "a32nx-mcdu";
+@import "a32nx-instrument";
+@import "a32nx-button";
+@import "a32nx-lcd";
