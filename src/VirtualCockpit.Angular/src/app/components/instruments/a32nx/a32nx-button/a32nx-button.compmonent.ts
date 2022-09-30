@@ -22,22 +22,14 @@ export class A32NxButtonComponent implements OnInit {
 
   public properties: ValueProperties = defaultProperty;
   public value: number = 0;
-  valueProperties: ValueProperties[] = [
-    defaultProperty,
-    { value: 1, feebackColor: 'green' },
-  ];
+  valueProperties: ValueProperties[] = [defaultProperty, { value: 1, feebackColor: 'green' }];
 
   constructor(private simConnect: SimConnectService) {}
 
   ngOnInit(): void {
-    this.simConnect
-      .subscribeTo(this.readFrom)
-      .subscribe((request) => this.parseSimvarRequest(request));
+    this.simConnect.subscribeTo(this.readFrom).subscribe((request) => this.parseSimvarRequest(request));
 
-    const simVars = this.simConnect.allSimvars.filter(
-      (item) =>
-        this.readFrom.includes(item.name) || this.writeTo.includes(item.name)
-    );
+    const simVars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
 
     this.simConnect
       .add(simVars)
@@ -56,14 +48,11 @@ export class A32NxButtonComponent implements OnInit {
   }
 
   parseProperties() {
-    this.properties =
-      this.valueProperties.find((item) => item.value === this.value) ??
-      defaultProperty;
+    this.properties = this.valueProperties.find((item) => item.value === this.value) ?? defaultProperty;
   }
 
   public setValue(value: number): void {
     this.writeTo.forEach((element) => {
-      console.log('setValue');
       this.simConnect.setVariable(element, value).subscribe();
     });
   }

@@ -13,11 +13,11 @@
         <div>TO</div>
         <div>GA</div>
       </button>
-      <button class="a32nx-button small two-line btn-flex" (click)="updateValue(90)">
+      <button class="a32nx-button small two-line btn-flex" (click)="updateValue(85)">
         <div>FLX</div>
         <div>MCT</div>
       </button>
-      <button class="a32nx-button small btn-climb" (click)="updateValue(80)">
+      <button class="a32nx-button small btn-climb" (click)="updateValue(70)">
         <div>CL</div>
       </button>
       <button class="a32nx-button small btn-idle" (click)="updateValue(0)">
@@ -35,6 +35,7 @@
         min="{{ properties.minValue }}"
         max="{{ properties.maxValue }}"
         [(ngModel)]="properties.value1"
+        (ngModelChange)="rangeValue1Changed($event)"
         list="rangeDetents"
       />
     </div>
@@ -46,6 +47,7 @@
         min="{{ properties.minValue }}"
         max="{{ properties.maxValue }}"
         [(ngModel)]="properties.value2"
+        (ngModelChange)="rangeValue2Changed($event)"
         list="rangeDetents"
       />
     </div>

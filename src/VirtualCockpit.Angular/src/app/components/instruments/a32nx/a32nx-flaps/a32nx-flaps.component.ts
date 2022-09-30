@@ -41,8 +41,6 @@ export class A32NxFlapsComponent implements OnInit {
   }
 
   public setValue(value: number): void {
-    this.simConnect
-      .setVariable('A32NX_FLAPS_HANDLE_INDEX', value)
-      .subscribe((result) => console.log(result));
+    this.simConnect.setVariable('A32NX_FLAPS_HANDLE_INDEX', value).subscribe();
   }
 }

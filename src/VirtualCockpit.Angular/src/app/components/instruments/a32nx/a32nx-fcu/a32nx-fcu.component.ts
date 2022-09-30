@@ -95,6 +95,19 @@ export class A32NxFcuComponent implements OnInit {
 
   parseSimvarRequest(request: SimvarRequest): void {
     switch (request.name) {
+      case 'A32NX_AUTOPILOT_SPEED_SELECTED':
+        this.properties.lateralSpeed = request.valueAsDecimal;
+        break;
+      case 'A32NX_AUTOPILOT_HEADING_SELECTED':
+        this.properties.heading = request.valueAsDecimal;
+        break;
+      case 'AUTOPILOT ALTITUDE LOCK VAR:3':
+        this.properties.altitude = Math.round(request.valueAsDecimal * 3.28084);
+        break;
+      case 'A32NX_AUTOPILOT_VS_SELECTED':
+        this.properties.verticalSpeed = request.valueAsDecimal;
+        break;
+      //
       case 'A32NX_FCU_LOC_MODE_ACTIVE':
         switch (request.valueAsDecimal) {
           case 0:
@@ -163,8 +176,8 @@ export class A32NxFcuComponent implements OnInit {
 
   offsetLateralSpeed(offset: number) {
     var newValue = this.properties.lateralSpeed + offset;
-    if (newValue < 0) {
-      newValue = 0;
+    if (newValue < 100) {
+      newValue = 100;
     }
     if (newValue > 399) {
       newValue = 399;
@@ -173,12 +186,12 @@ export class A32NxFcuComponent implements OnInit {
   }
 
   offsetHeading(offset: number) {
-    var newValue = (this.properties.lateralSpeed + offset) % 360;
+    var newValue = (this.properties.heading + offset) % 360;
     this.simConnect.setVariable('A32NX.FCU_HDG_SET', newValue).subscribe();
   }
 
   offsetAltitude(offset: number) {
-    var newValue = this.properties.lateralSpeed + offset;
+    var newValue = this.properties.altitude + offset;
     if (newValue < 100) {
       newValue = 100;
     }
@@ -189,7 +202,7 @@ export class A32NxFcuComponent implements OnInit {
   }
 
   offsetVerticalSpeed(offset: number) {
-    var newValue = this.properties.lateralSpeed + offset;
+    var newValue = this.properties.verticalSpeed + offset;
     if (newValue < -6000) {
       newValue = -6000;
     }

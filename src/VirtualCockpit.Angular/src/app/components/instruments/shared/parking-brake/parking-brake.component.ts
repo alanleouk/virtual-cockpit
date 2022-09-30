@@ -37,8 +37,6 @@ export class ParkingBrakeComponent implements OnInit {
   }
 
   public toggleValue(): void {
-    this.simConnect
-      .setVariable('A32NX_PARK_BRAKE_LEVER_POS', this.value === 0 ? 1 : 0)
-      .subscribe((result) => console.log(result));
+    this.simConnect.setVariable('A32NX_PARK_BRAKE_LEVER_POS', this.value === 0 ? 1 : 0).subscribe();
   }
 }

@@ -5,28 +5,42 @@ import { SimConnectService } from 'src/app/services/simconnect.service';
 
 const MAX_VALUE = 16384;
 
+export class A32NxSpeedBrakesProperties {
+  public maxValue: number;
+  public value: number;
+  public loadedValue: boolean;
+  public rangeValue: number;
+  public armed: boolean;
+
+  constructor() {
+    this.maxValue = MAX_VALUE;
+    this.value = 0;
+    this.loadedValue = false;
+    this.rangeValue = MAX_VALUE;
+    this.armed = false;
+  }
+}
+
 @Component({
   selector: 'app-a32nx-speed-brakes',
   templateUrl: './a32nx-speed-brakes.component.html',
 })
 export class A32NxSpeedBrakesComponent implements OnInit {
-  readFrom = ['A32NX_SPOILERS_HANDLE_POSITION', 'A32NX_SPOILERS_ARMED', 'SPOILERS ARMED'];
+  properties = new A32NxSpeedBrakesProperties();
+
+  readFrom = ['A32NX_SPOILERS_HANDLE_POSITION', 'A32NX_SPOILERS_ARMED'];
   writeTo = ['SPOILERS_SET', 'SPOILERS_ARM_TOGGLE'];
 
   private rangeValueChangedSubject = new BehaviorSubject<number>(0);
 
-  public maxValue = MAX_VALUE;
-  public value: number = 0;
-  public rangeValue: number = MAX_VALUE;
-  public armed: boolean = false;
-
   constructor(private simConnect: SimConnectService) {}
 
   ngOnInit(): void {
-    this.rangeValueChangedSubject.pipe(distinctUntilChanged(), debounceTime(200)).subscribe((rangeValue) => {
-      // this.value = this.maxValue - rangeValue;
-      // this.rangeValue = rangeValue;
-      this.setValue(this.value);
+    this.rangeValueChangedSubject.pipe(distinctUntilChanged(), debounceTime(100)).subscribe((rangeValue) => {
+      if (!this.properties.loadedValue) {
+        return;
+      }
+      this.setValue(this.properties.maxValue - rangeValue);
     });
 
     this.simConnect.subscribeTo(this.readFrom).subscribe((request) => this.parseSimvarRequest(request));
@@ -42,28 +56,34 @@ export class A32NxSpeedBrakesComponent implements OnInit {
   parseSimvarRequest(request: SimvarRequest): void {
     switch (request.name) {
       case 'A32NX_SPOILERS_HANDLE_POSITION':
-        this.value = request.valueAsDecimal * this.maxValue;
-        this.rangeValue = this.maxValue - this.value;
+        this.properties.loadedValue = true;
+        this.properties.value = request.valueAsDecimal * this.properties.maxValue;
+        this.properties.rangeValue = this.properties.maxValue - this.properties.value;
         break;
       case 'A32NX_SPOILERS_ARMED':
-      case 'SPOILERS ARMED':
-        this.armed = request.valueAsDecimal > 0;
+        this.properties.armed = request.valueAsDecimal > 0;
         break;
     }
   }
 
   public updateValue(value: number) {
-    this.rangeValueChangedSubject.next(this.maxValue - value);
-  }
-
-  public setValue(value: number): void {
-    this.simConnect.setVariable('SPOILERS_SET', value).subscribe((result) => console.log(result));
-  }
-  public setSpoilersArmed(): void {
-    this.simConnect.setVariable('SPOILERS_ARM_TOGGLE', 0).subscribe((result) => console.log(result));
+    if (!this.properties.loadedValue) {
+      return;
+    }
+    this.rangeValueChangedSubject.next(this.properties.maxValue - value);
   }
 
   public rangeValueChanged(rangeValue: number) {
+    if (!this.properties.loadedValue) {
+      return;
+    }
     this.rangeValueChangedSubject.next(rangeValue);
+  }
+
+  public setValue(value: number): void {
+    this.simConnect.setVariable('SPOILERS_SET', value).subscribe();
+  }
+  public setSpoilersArmed(): void {
+    this.simConnect.setVariable('SPOILERS_ARM_TOGGLE', 0).subscribe();
   }
 }

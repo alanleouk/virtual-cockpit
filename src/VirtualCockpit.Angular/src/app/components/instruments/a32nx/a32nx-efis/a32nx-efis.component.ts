@@ -86,14 +86,9 @@ export class A32NxEfisComponent implements OnInit {
   constructor(private simConnect: SimConnectService) {}
 
   ngOnInit(): void {
-    this.simConnect
-      .subscribeTo(this.readFrom)
-      .subscribe((request) => this.parseSimvarRequest(request));
+    this.simConnect.subscribeTo(this.readFrom).subscribe((request) => this.parseSimvarRequest(request));
 
-    const simVars = this.simConnect.allSimvars.filter(
-      (item) =>
-        this.readFrom.includes(item.name) || this.writeTo.includes(item.name)
-    );
+    const simVars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
 
     this.simConnect
       .add(simVars)
@@ -111,13 +106,11 @@ export class A32NxEfisComponent implements OnInit {
         break;
 
       case 'AUTOPILOT FLIGHT DIRECTOR ACTIVE':
-        this.properties.fdColor =
-          request.valueAsDecimal == 0 ? 'default' : 'green';
+        this.properties.fdColor = request.valueAsDecimal == 0 ? 'default' : 'green';
         break;
 
       case 'BTN_LS_1_FILTER_ACTIVE':
-        this.properties.lsColor =
-          request.valueAsDecimal == 0 ? 'default' : 'green';
+        this.properties.lsColor = request.valueAsDecimal == 0 ? 'default' : 'green';
         break;
 
       case 'A32NX_EFIS_L_OPTION':
@@ -205,47 +198,30 @@ export class A32NxEfisComponent implements OnInit {
   }
 
   public toggleFd(): void {
-    this.simConnect
-      .setVariable('TOGGLE_FLIGHT_DIRECTOR', 0)
-      .subscribe((result) => console.log(result));
+    this.simConnect.setVariable('TOGGLE_FLIGHT_DIRECTOR', 0).subscribe();
   }
 
   public toggleLs(): void {
-    this.simConnect
-      .setVariable(
-        'BTN_LS_1_FILTER_ACTIVE',
-        this.properties.lsColor === 'default' ? 1 : 0
-      )
-      .subscribe((result) => console.log(result));
+    this.simConnect.setVariable('BTN_LS_1_FILTER_ACTIVE', this.properties.lsColor === 'default' ? 1 : 0).subscribe();
   }
 
   public setNdFilter(value: number): void {
-    this.simConnect
-      .setVariable('A32NX_EFIS_L_OPTION', value)
-      .subscribe((result) => console.log(result));
+    this.simConnect.setVariable('A32NX_EFIS_L_OPTION', value).subscribe();
   }
 
   public setNdMode(value: number): void {
-    this.simConnect
-      .setVariable('A32NX_EFIS_L_ND_MODE', value)
-      .subscribe((result) => console.log(result));
+    this.simConnect.setVariable('A32NX_EFIS_L_ND_MODE', value).subscribe();
   }
 
   public setNdRange(value: number): void {
-    this.simConnect
-      .setVariable('A32NX_EFIS_L_ND_RANGE', value)
-      .subscribe((result) => console.log(result));
+    this.simConnect.setVariable('A32NX_EFIS_L_ND_RANGE', value).subscribe();
   }
 
   public increaseQnh(): void {
-    this.simConnect
-      .setVariable('KOHLSMAN_SET', (this.properties.qnhValue + 1) * 16)
-      .subscribe((result) => console.log(result));
+    this.simConnect.setVariable('KOHLSMAN_SET', (this.properties.qnhValue + 1) * 16).subscribe();
   }
 
   public decreaseQnh(): void {
-    this.simConnect
-      .setVariable('KOHLSMAN_SET', (this.properties.qnhValue - 1) * 16)
-      .subscribe((result) => console.log(result));
+    this.simConnect.setVariable('KOHLSMAN_SET', (this.properties.qnhValue - 1) * 16).subscribe();
   }
 }

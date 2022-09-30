@@ -37,8 +37,6 @@ export class LandingGearComponent implements OnInit {
   }
 
   public toggleValue(): void {
-    this.simConnect
-      .setVariable('GEAR HANDLE POSITION', this.value === 0 ? 1 : 0)
-      .subscribe((result) => console.log(result));
+    this.simConnect.setVariable('GEAR HANDLE POSITION', this.value === 0 ? 1 : 0).subscribe();
   }
 }

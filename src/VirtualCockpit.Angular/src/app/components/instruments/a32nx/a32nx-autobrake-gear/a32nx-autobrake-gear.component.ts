@@ -37,7 +37,7 @@ export class A32NxAutobrakeGearComponent implements OnInit {
   properties = new A32NxAutobrakeGearProperties();
 
   readFrom = ['GEAR HANDLE POSITION', 'GEAR LEFT POSITION', 'GEAR CENTER POSITION', 'GEAR RIGHT POSITION', 'A32NX_AUTOBRAKES_ARMED_MODE'];
-  writeTo = ['GEAR_UP', 'GEAR_DOWN', 'GEAR HANDLE POSITION', 'A32NX.AUTOBRAKE_SET'];
+  writeTo = ['GEAR_UP', 'GEAR_DOWN', 'GEAR HANDLE POSITION', 'A32NX_AUTOBRAKES_ARMED_MODE_SET'];
 
   public value: number = 0;
 
@@ -69,27 +69,28 @@ export class A32NxAutobrakeGearComponent implements OnInit {
         }
         break;
       case 'GEAR LEFT POSITION':
-        if (request.valueAsDecimal < 50) {
+        console.log(request.valueAsDecimal);
+        if (request.valueAsDecimal < 0.5) {
           this.properties.ldg1Color = 'default';
-        } else if (request.valueAsDecimal < 100) {
+        } else if (request.valueAsDecimal < 1) {
           this.properties.ldg1Color = 'amber';
         } else {
           this.properties.ldg1Color = 'green';
         }
         break;
       case 'GEAR CENTER POSITION':
-        if (request.valueAsDecimal < 50) {
+        if (request.valueAsDecimal < 0.5) {
           this.properties.ldg2Color = 'default';
-        } else if (request.valueAsDecimal < 100) {
+        } else if (request.valueAsDecimal < 1) {
           this.properties.ldg2Color = 'amber';
         } else {
           this.properties.ldg2Color = 'green';
         }
         break;
       case 'GEAR RIGHT POSITION':
-        if (request.valueAsDecimal < 50) {
+        if (request.valueAsDecimal < 0.5) {
           this.properties.ldg3Color = 'default';
-        } else if (request.valueAsDecimal < 100) {
+        } else if (request.valueAsDecimal < 1) {
           this.properties.ldg3Color = 'amber';
         } else {
           this.properties.ldg3Color = 'green';

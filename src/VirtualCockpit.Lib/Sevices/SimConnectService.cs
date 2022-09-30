@@ -538,10 +538,13 @@ namespace VirtualCockpit.Lib.Sevices
                     break;
 
                 case ParamaterType.KEvent:
+                    var bytes = BitConverter.GetBytes(Convert.ToInt32(value ?? 0));
+                    var param = BitConverter.ToUInt32(bytes, 0);
+                    
                     _simConnect.TransmitClientEvent(
                         0,
                         (EVENT)request.DefinitionId,
-                        (uint)(value ?? 0),
+                        param,
                         (EVENT)SimConnect.SIMCONNECT_GROUP_PRIORITY_HIGHEST,
                         SIMCONNECT_EVENT_FLAG.GROUPID_IS_PRIORITY);
                     break;

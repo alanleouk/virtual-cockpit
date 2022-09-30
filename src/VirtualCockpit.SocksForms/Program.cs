@@ -19,9 +19,10 @@ static class Program
             options.AddDefaultPolicy(
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200", "http://localhost:12345")
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    builder.WithOrigins("http://localhost:4200", "http://localhost:12345",
+                            "https://vcockpit-local.osz.one")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                 });
         });
 
