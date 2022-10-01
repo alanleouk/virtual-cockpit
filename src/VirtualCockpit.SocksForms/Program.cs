@@ -9,11 +9,17 @@ namespace VirtualCockpit.SocksForms;
 static class Program
 {
     [STAThread]
-    static async Task Main()
+    static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder();
         var configuration = builder.Configuration;
         var services = builder.Services;
+
+        // Args
+        foreach(var arg in args)
+        {
+
+        }
 
         // Kesterel
         builder.WebHost.ConfigureKestrel((context, serverOptions) =>
@@ -23,9 +29,10 @@ static class Program
             serverOptions.Configure(kestrelSection)
                 .Endpoint("Https", listenOptions =>
                 {
+                    /*
                     Debug.Assert(listenOptions.ListenOptions.IPEndPoint != null,
                         "listenOptions.ListenOptioCertificatens.IPEndPoint != null");
-                    listenOptions.ListenOptions.IPEndPoint.Address = IPAddress.Parse("127.0.0.20");
+                    listenOptions.ListenOptions.IPEndPoint.Address = IPAddress.Parse("127.0.0.20");*/
                 });
         });
 
