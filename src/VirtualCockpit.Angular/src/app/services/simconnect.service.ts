@@ -424,7 +424,7 @@ export class SimConnectService {
     {
       category: 'FCU Panel (Expedite)',
       paramaterType: ParamaterType.KEvent,
-      name: '	A32NX.FCU_EXPED_PUSH',
+      name: 'A32NX.FCU_EXPED_PUSH',
       units: 'number',
       precision: 0,
     },
@@ -482,7 +482,7 @@ export class SimConnectService {
     {
       category: 'FCU Panel (Approach)',
       paramaterType: ParamaterType.KEvent,
-      name: '	A32NX.FCU_APPR_PUSH',
+      name: 'A32NX.FCU_APPR_PUSH',
       units: 'number',
       precision: 0,
     },
@@ -504,21 +504,21 @@ export class SimConnectService {
     {
       category: 'FCU Panel (Autopilot)',
       paramaterType: ParamaterType.KEvent,
-      name: '	A32NX.FCU_AP_1_PUSH',
+      name: 'A32NX.FCU_AP_1_PUSH',
       units: 'number',
       precision: 0,
     },
     {
       category: 'FCU Panel (Autopilot)',
       paramaterType: ParamaterType.KEvent,
-      name: '	A32NX.FCU_AP_2_PUSH',
+      name: 'A32NX.FCU_AP_2_PUSH',
       units: 'number',
       precision: 0,
     },
     {
       category: 'FCU Panel (Autopilot)',
       paramaterType: ParamaterType.KEvent,
-      name: '	A32NX.FCU_AP_DISCONNECT_PUSH',
+      name: 'A32NX.FCU_AP_DISCONNECT_PUSH',
       units: 'number',
       precision: 0,
     },
@@ -533,14 +533,14 @@ export class SimConnectService {
     {
       category: 'FCU Panel (Auto Thrust)',
       paramaterType: ParamaterType.KEvent,
-      name: '	A32NX.FCU_ATHR_PUSH',
+      name: 'A32NX.FCU_ATHR_PUSH',
       units: 'number',
       precision: 0,
     },
     {
       category: 'FCU Panel (Auto Thrust)',
       paramaterType: ParamaterType.KEvent,
-      name: '	A32NX.FCU_ATHR_DISCONNECT_PUSH',
+      name: 'A32NX.FCU_ATHR_DISCONNECT_PUSH',
       units: 'number',
       precision: 0,
     },
@@ -555,7 +555,7 @@ export class SimConnectService {
     {
       category: 'FCU Panel (Speed/Mach)',
       paramaterType: ParamaterType.KEvent,
-      name: '	A32NX.FCU_SPD_MACH_TOGGLE_PUSH',
+      name: 'A32NX.FCU_SPD_MACH_TOGGLE_PUSH',
       units: 'number',
       precision: 0,
     },
@@ -570,7 +570,7 @@ export class SimConnectService {
     {
       category: 'FCU Panel (Heading Track / VS FPA)',
       paramaterType: ParamaterType.KEvent,
-      name: '	A32NX.FCU_TRK_FPA_TOGGLE_PUSH',
+      name: 'A32NX.FCU_TRK_FPA_TOGGLE_PUSH',
       units: 'number',
       precision: 0,
     },
