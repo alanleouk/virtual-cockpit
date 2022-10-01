@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using VirtualCockpit.Lib.Models;
@@ -14,13 +15,28 @@ static class Program
         var configuration = builder.Configuration;
         var services = builder.Services;
 
+        // Kesterel
+        builder.WebHost.ConfigureKestrel((context, serverOptions) =>
+        {
+            var kestrelSection = context.Configuration.GetSection("Kestrel");
+
+            serverOptions.Configure(kestrelSection)
+                .Endpoint("Https", listenOptions =>
+                {
+                    Debug.Assert(listenOptions.ListenOptions.IPEndPoint != null,
+                        "listenOptions.ListenOptioCertificatens.IPEndPoint != null");
+                    listenOptions.ListenOptions.IPEndPoint.Address = IPAddress.Parse("127.0.0.20");
+                });
+        });
+
+        // Cors
         services.AddCors(options =>
         {
             options.AddDefaultPolicy(
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200", "http://localhost:12345",
-                            "https://vcockpit-local.osz.one")
+                    builder
+                        .WithOrigins("http://localhost:4200", "https://vcockpit-local.osz.one", "https://vcockpit.osz.one")
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
@@ -31,13 +47,17 @@ static class Program
         services.AddSingleton(simConnectService);
         services.AddScoped<WebSocketService>();
 
-        builder.WebHost.UseUrls("http://localhost:12345");
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
 
         app.UseCors();
         app.UseWebSockets();
+
+        app.MapGet("/status", async (HttpContext context) =>
+        {
+            return Results.Ok(true);
+        });
 
         app.MapPost("/connect", async (HttpContext context, [FromServices] SimConnectService simConnectService, [FromBody] ConnectRequest request) =>
         {

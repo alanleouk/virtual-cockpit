@@ -12,4 +12,16 @@
       <ProjectReference Include="..\VirtualCockpit.Lib\VirtualCockpit.Lib.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="ca.crt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="osz.one.crt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+      <None Update="osz.one.key">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
