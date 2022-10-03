@@ -1,8 +1,5 @@
-import { ParamaterType } from './paramater-type';
+import { SimvarDefinition } from './simvar-definition';
 
 export class AddRequest {
-  public paramaterType?: ParamaterType;
-  public name?: string;
-  public units?: string;
-  public precision?: number;
+  public simvarDefinitions: SimvarDefinition[] = [];
 }

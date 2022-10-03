@@ -38,7 +38,7 @@ export class A32NxFcuProperties {
 export class A32NxFcuComponent implements OnInit {
   properties = new A32NxFcuProperties();
 
-  readFrom = [
+  readFrom: string[] = [
     'A32NX_AUTOPILOT_SPEED_SELECTED',
     'A32NX_AUTOPILOT_HEADING_SELECTED',
     'AUTOPILOT ALTITUDE LOCK VAR:3',
@@ -52,7 +52,7 @@ export class A32NxFcuComponent implements OnInit {
     'A32NX_AUTOTHRUST_STATUS',
     'A32NX_TRK_FPA_MODE_ACTIVE',
   ];
-  writeTo = [
+  writeTo: string[] = [
     'A32NX.FCU_SPD_SET',
     'A32NX.FCU_SPD_PUSH',
     'A32NX.FCU_SPD_PULL',
@@ -82,13 +82,13 @@ export class A32NxFcuComponent implements OnInit {
   ngOnInit(): void {
     this.simConnect.subscribeTo(this.readFrom).subscribe((request) => this.parseSimvarRequest(request));
 
-    const simVars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
+    const simvars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
 
     this.simConnect
-      .add(simVars)
+      .add({ simvarDefinitions: simvars })
       .pipe(
         switchMap((_) => this.simConnect.connect()),
-        switchMap((_) => this.simConnect.send())
+        switchMap((_) => this.simConnect.send({ simvarKeys: this.readFrom }))
       )
       .subscribe();
   }

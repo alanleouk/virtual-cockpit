@@ -44,7 +44,7 @@ export class SimvarsComponent implements OnInit {
       .addAll()
       .pipe(
         switchMap((_) => this.simConnect.connect()),
-        switchMap((_) => this.simConnect.send())
+        switchMap((_) => this.simConnect.send({ simvarKeys: this.simvars.map((item) => item.name) }))
       )
       .subscribe();
   }

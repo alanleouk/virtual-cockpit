@@ -1,5 +1,6 @@
 using VirtualCockpit.Lib.Models;
 using VirtualCockpit.Lib.Sevices;
+using VirtualCockpit.SocksForms.Services;
 
 namespace VirtualCockpit.SocksForms;
 
@@ -7,15 +8,18 @@ public partial class MainForm : Form
 {
     private readonly SimConnectService _simConnectService;
     private readonly CancellationTokenSource _cts;
+    private readonly WebHostService _webHost;
 
-    public MainForm(SimConnectService simConnectService, CancellationTokenSource cts)
+    public MainForm(WebHostService webHost, CancellationTokenSource cts)
     {
-        _simConnectService = simConnectService;
+        _simConnectService = webHost.SimConnectService;
+        _webHost = webHost;
         _cts = cts;
 
         InitializeComponent();
 
         Load += MainForm_Load;
+
     }
 
     private void MainForm_Load(object sender, EventArgs e)
@@ -25,15 +29,9 @@ public partial class MainForm : Form
         _simConnectService.MessageReceivedEvent += SimConnectServiceOnMessageReceivedEvent;
         _simConnectService.LoggingEvent += SimConnectServiceOnLoggingEvent;
         _simConnectService.SetWindowHandle(Handle);
-
-        /*
-        // _simConnectService.AddRequest(ParamaterType.SimVar, "GENERAL ENG THROTTLE LEVER POSITION:1", "percent", 0);
-        // _simConnectService.AddRequest(ParamaterType.SimVar, "GENERAL ENG THROTTLE LEVER POSITION:2", "percent", 0);
-        _simConnectService.Add(ParamaterType.SimVar, "FLAPS HANDLE INDEX", "number", 0);
-        _simConnectService.Add(ParamaterType.LVar, "A32NX_FLAPS_HANDLE_INDEX", "number", 0);
-        // _simConnectService.AddRequest(ParamaterType.SimVar, "RUDDER POSITION", "position", 2);
-        _simConnectService.Connect();
-        */
+        //
+        _webHost.LoggingEvent += SimConnectServiceOnLoggingEvent;
+        _webHost.SendStatusMessage();
     }
 
     private void SimConnectServiceOnLoggingEvent(string message)
@@ -51,7 +49,7 @@ public partial class MainForm : Form
 
     private void SimConnectServiceOnMessageReceivedEvent(SimvarRequest request)
     {
-        var value = request.Name + ": " + request.ValueAsString;
+        string value = request.Name + ": " + request.ValueAsString + " / " + request.ValueAsDecimal;
         outputTextbox.Invoke(() => outputTextbox.AppendText(value + "\r\n"));
     }
 
@@ -67,9 +65,9 @@ public partial class MainForm : Form
 
     private void cmdSend_Click(object sender, EventArgs e)
     {
-        decimal.TryParse(valueTextbox.Text, out var valueAsDecimal);
+        decimal.TryParse(valueTextbox.Text, out decimal valueAsDecimal);
 
-        var request = new SimvarRequest
+        SimvarRequest request = new()
         {
             Name = commandTextbox.Text,
             Units = "unknown",

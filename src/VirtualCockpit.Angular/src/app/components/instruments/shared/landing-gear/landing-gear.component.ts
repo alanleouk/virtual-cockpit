@@ -8,8 +8,8 @@ import { SimConnectService } from 'src/app/services/simconnect.service';
   templateUrl: './landing-gear.component.html',
 })
 export class LandingGearComponent implements OnInit {
-  readFrom = ['GEAR HANDLE POSITION'];
-  writeTo = [];
+  readFrom: string[] = ['GEAR HANDLE POSITION'];
+  writeTo: string[] = [];
 
   public value: number = 0;
 
@@ -20,18 +20,13 @@ export class LandingGearComponent implements OnInit {
       this.value = result.valueAsDecimal;
     });
 
+    const simvars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
+
     this.simConnect
-      .add([
-        {
-          paramaterType: ParamaterType.SimVar,
-          name: 'GEAR HANDLE POSITION',
-          units: 'number',
-          precision: 0,
-        },
-      ])
+      .add({ simvarDefinitions: simvars })
       .pipe(
         switchMap((_) => this.simConnect.connect()),
-        switchMap((_) => this.simConnect.send())
+        switchMap((_) => this.simConnect.send({ simvarKeys: this.readFrom }))
       )
       .subscribe();
   }

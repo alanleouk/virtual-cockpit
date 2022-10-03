@@ -48,10 +48,16 @@
             <li>
               <a class="dropdown-item" href="#" routerLink="instruments/a32nx/thrust">A32Nx - Thrust</a>
             </li>
+            <li>
+              <a class="dropdown-item" href="#" routerLink="instruments/a32nx/speed-brakes">A32Nx - Speed Brakes</a>
+            </li>
           </ul>
         </li>
       </ul>
       <div class="d-flex">
+        <button class="btn btn-outline-success" (click)="refresh()">
+          <span>Refresh</span>
+        </button>
         <button class="btn btn-outline-primary" (click)="toggleFullWidth()">
           <span *ngIf="!this.config.current.layout.fullWidth">Expand</span><span *ngIf="this.config.current.layout.fullWidth">Collapse</span>
         </button>

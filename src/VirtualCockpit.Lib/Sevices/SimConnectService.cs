@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using Microsoft.FlightSimulator.SimConnect;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Microsoft.FlightSimulator.SimConnect;
 using VirtualCockpit.Lib.Models;
 
 namespace VirtualCockpit.Lib.Sevices
@@ -16,8 +16,9 @@ namespace VirtualCockpit.Lib.Sevices
         public uint _objectIdRequest = 0;
 
         private readonly object _simvarRequestsLock = new();
-        private readonly ObservableCollection<SimvarRequest> _simvarRequests;
-        private readonly Dictionary<string, string> _cache;
+        private readonly ConcurrentBag<SimvarRequest> _simvarRequests;
+        private readonly ConcurrentDictionary<string, CacheData> _cache;
+        // private readonly ConcurrentDictionary<string, decimal> _cacheCutoff;
 
         // Client Area Data names
         private const string CLIENT_DATA_NAME_LVARS = "HABI_WASM.LVars";
@@ -27,6 +28,8 @@ namespace VirtualCockpit.Lib.Sevices
 
         public const int WM_USER_SIMCONNECT = 0x0402;
         private IntPtr _hWnd = new(0);
+
+        private readonly object _simConnectLock = new();
         private SimConnect _simConnect = null;
 
         private SIMCONNECT_SIMOBJECT_TYPE _simObjectType = SIMCONNECT_SIMOBJECT_TYPE.USER;
@@ -35,11 +38,10 @@ namespace VirtualCockpit.Lib.Sevices
         private bool _connected = false;
 
         public delegate void MessageReceivedEventHandler(SimvarRequest request);
-
         public event MessageReceivedEventHandler MessageReceivedEvent;
 
+        // TODO: Implement Logging
         public delegate void LoggingEventHandler(string message);
-
         public event LoggingEventHandler LoggingEvent;
 
         // Currently we are using fixed size strings of 256 characters
@@ -94,8 +96,9 @@ namespace VirtualCockpit.Lib.Sevices
 
         public SimConnectService()
         {
-            _simvarRequests = new ObservableCollection<SimvarRequest>();
-            _cache = new Dictionary<string, string>();
+            _simvarRequests = new ConcurrentBag<SimvarRequest>();
+            _cache = new ConcurrentDictionary<string, CacheData>();
+            // _cacheCutoff = new ConcurrentDictionary<string, decimal>();
         }
 
         public void SetWindowHandle(IntPtr hWnd)
@@ -143,20 +146,27 @@ namespace VirtualCockpit.Lib.Sevices
             {
                 return;
             }
+            lock (_simConnectLock)
+            {
+                if (_simConnect != null)
+                {
+                    return;
+                }
 
-            try
-            {
-                _simConnect = new SimConnect("Simconnect", _hWnd, WM_USER_SIMCONNECT, null,
-                    _FSXcompatible ? (uint)1 : 0);
-                _simConnect.OnRecvOpen += SimConnect_OnReceiveOpen;
-                _simConnect.OnRecvQuit += SimConnect_OnReceiveQuit;
-                _simConnect.OnRecvException += SimConnect_OnReceiveException;
-                _simConnect.OnRecvSimobjectData += SimConnect_OnReceiveSimObjectData;
-                _simConnect.OnRecvClientData += SimConnect_OnRecvClientData;
-            }
-            catch (COMException ex)
-            {
-                LoggingEvent?.Invoke("Connection to KH failed: " + ex.Message);
+                try
+                {
+                    _simConnect = new SimConnect("Simconnect", _hWnd, WM_USER_SIMCONNECT, null,
+                        _FSXcompatible ? (uint)1 : 0);
+                    _simConnect.OnRecvOpen += SimConnect_OnReceiveOpen;
+                    _simConnect.OnRecvQuit += SimConnect_OnReceiveQuit;
+                    _simConnect.OnRecvException += SimConnect_OnReceiveException;
+                    _simConnect.OnRecvSimobjectData += SimConnect_OnReceiveSimObjectData;
+                    _simConnect.OnRecvClientData += SimConnect_OnRecvClientData;
+                }
+                catch (COMException ex)
+                {
+                    LoggingEvent?.Invoke("Connection to Flight Simulator failed: " + ex.Message);
+                }
             }
         }
 
@@ -164,7 +174,9 @@ namespace VirtualCockpit.Lib.Sevices
         {
             LoggingEvent?.Invoke("Disconnect");
 
+
             _cache.Clear();
+            // _cacheCutoff.Clear();
 
             if (_simConnect != null)
             {
@@ -183,27 +195,27 @@ namespace VirtualCockpit.Lib.Sevices
                 _simvarRequests.Clear();
             }
         }
-        
-        public void Add(AddRequest[] requests)
+
+        public void Add(AddRequest request)
         {
             lock (_simvarRequestsLock)
             {
-                foreach (var request in requests)
+                foreach (SimvarDefinition simvarDefinition in request.SimvarDefinitions)
                 {
-                    var simvarRequest = _simvarRequests.FirstOrDefault(item => item.Name == request.Name);
-                    
+                    SimvarRequest? simvarRequest = _simvarRequests.FirstOrDefault(item => item.Name == simvarDefinition.Name);
+
                     if (simvarRequest == null)
                     {
-                        LoggingEvent?.Invoke("Add: " + request.Name);
+                        LoggingEvent?.Invoke("Add: " + simvarDefinition.Name);
 
                         simvarRequest = new SimvarRequest
                         {
                             DefinitionId = DEFINITION.Dummy,
                             RequestId = REQUEST.Dummy,
-                            ParamaterType = request.ParamaterType,
-                            Name = request.Name,
-                            Units = request.Units,
-                            Precision = request.Precision
+                            ParamaterType = simvarDefinition.ParamaterType,
+                            Name = simvarDefinition.Name,
+                            Units = simvarDefinition.Units,
+                            Precision = simvarDefinition.Precision
                         };
                         _simvarRequests.Add(simvarRequest);
 
@@ -211,74 +223,78 @@ namespace VirtualCockpit.Lib.Sevices
                     }
                     else
                     {
-                        LoggingEvent?.Invoke("Updated: " + request.Name);
-                        
-                        simvarRequest.Units = request.Units;
-                        simvarRequest.Precision = request.Precision;
+                        LoggingEvent?.Invoke("Updated: " + simvarDefinition.Name);
+
+                        simvarRequest.Units = simvarDefinition.Units;
+                        simvarRequest.Precision = simvarDefinition.Precision;
                     }
+
+                    _cache.Remove(simvarRequest.Name, out CacheData _);
                 }
             }
         }
 
-        public void Send()
+        public void Send(SendRequest request)
         {
             LoggingEvent?.Invoke("Send");
-            foreach (var request in _simvarRequests)
+
+            List<SimvarRequest> simvarRequests = _simvarRequests.Where(item =>
+                    request.SimvarKeys.Any(key => key.Equals(item.Name, StringComparison.InvariantCultureIgnoreCase)))
+                .ToList();
+
+            foreach (SimvarRequest? simvarRequest in simvarRequests)
             {
-                MessageReceivedEvent?.Invoke(request);
+                MessageReceivedEvent?.Invoke(simvarRequest);
             }
         }
 
         private bool RegisterToSimConnect(SimvarRequest request)
         {
-            lock (_simvarRequestsLock)
+            if (_simConnect == null || !_connected)
             {
-                if (_simConnect == null || !_connected)
-                {
-                    return false;
-                }
+                return false;
+            }
 
-                LoggingEvent?.Invoke($"Register to SimConnect: {request.Name}");
+            LoggingEvent?.Invoke($"Register to SimConnect: {request.Name}");
 
-                switch (request.ParamaterType)
-                {
-                    case ParamaterType.SimVar:
-                        request.DefinitionId = _currentDefinition;
-                        request.RequestId = _currentRequest;
+            switch (request.ParamaterType)
+            {
+                case ParamaterType.SimVar:
+                    request.DefinitionId = _currentDefinition;
+                    request.RequestId = _currentRequest;
 
-                        if (request.Units == null)
-                        {
-                            _simConnect.AddToDataDefinition(request.DefinitionId, request.Name, "",
-                                SIMCONNECT_DATATYPE.STRING256, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-                            _simConnect.RegisterDataDefineStruct<String256>(request.DefinitionId);
-                        }
-                        else
-                        {
-                            _simConnect.AddToDataDefinition(request.DefinitionId, request.Name, request.Units,
-                                SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-                            _simConnect.RegisterDataDefineStruct<double>(request.DefinitionId);
-                        }
+                    if (request.Units == null)
+                    {
+                        _simConnect.AddToDataDefinition(request.DefinitionId, request.Name, "",
+                            SIMCONNECT_DATATYPE.STRING256, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+                        _simConnect.RegisterDataDefineStruct<String256>(request.DefinitionId);
+                    }
+                    else
+                    {
+                        _simConnect.AddToDataDefinition(request.DefinitionId, request.Name, request.Units,
+                            SIMCONNECT_DATATYPE.FLOAT64, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+                        _simConnect.RegisterDataDefineStruct<double>(request.DefinitionId);
+                    }
 
-                        _simConnect?.RequestDataOnSimObject(request.RequestId, request.DefinitionId,
-                            SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.SIM_FRAME,
-                            SIMCONNECT_DATA_REQUEST_FLAG.CHANGED, 0, 0, 0);
+                    _simConnect?.RequestDataOnSimObject(request.RequestId, request.DefinitionId,
+                        SimConnect.SIMCONNECT_OBJECT_ID_USER, SIMCONNECT_PERIOD.SIM_FRAME,
+                        SIMCONNECT_DATA_REQUEST_FLAG.CHANGED, 0, 0, 0);
 
-                        ++_currentDefinition;
-                        ++_currentRequest;
-                        break;
+                    ++_currentDefinition;
+                    ++_currentRequest;
+                    break;
 
-                    case ParamaterType.LVar:
-                        SendWASMCmd($"HW.Reg.(L:{request.Name})");
-                        break;
+                case ParamaterType.LVar:
+                    SendWASMCmd($"HW.Reg.(L:{request.Name})");
+                    break;
 
-                    case ParamaterType.KEvent:
-                        request.DefinitionId = _currentDefinition;
-                        request.RequestId = (REQUEST)NOTUSED_ID;
+                case ParamaterType.KEvent:
+                    request.DefinitionId = _currentDefinition;
+                    request.RequestId = (REQUEST)NOTUSED_ID;
 
-                        _simConnect.MapClientEventToSimEvent(request.DefinitionId, request.Name);
-                        ++_currentDefinition;
-                        break;
-                }
+                    _simConnect.MapClientEventToSimEvent(request.DefinitionId, request.Name);
+                    ++_currentDefinition;
+                    break;
             }
 
             return true;
@@ -319,7 +335,7 @@ namespace VirtualCockpit.Lib.Sevices
         {
             Console.WriteLine("SimConnect_OnReceiveSimObjectData");
 
-            var request = _simvarRequests.FirstOrDefault(item =>
+            SimvarRequest? request = _simvarRequests.FirstOrDefault(item =>
                 item.ParamaterType == ParamaterType.SimVar && (UInt16)item.DefinitionId == data.dwDefineID);
             if (request == null)
             {
@@ -336,12 +352,12 @@ namespace VirtualCockpit.Lib.Sevices
 
             if (data.dwRequestID == (uint)CLIENTDATA_REQUEST_ID.ACK)
             {
-                var ackData = (LVarAck)(data.dwData[0]);
+                LVarAck ackData = (LVarAck)data.dwData[0];
                 Debug.WriteLine(
                     $"----> Acknowledge: ID: {ackData.DefineID}, Offset: {ackData.Offset}, String: {ackData.str}, value: {ackData.value}");
 
                 // if LVar DefineID already exists, ignore it, otherwise we will get "DUPLICATE_ID" exception
-                var request = _simvarRequests.FirstOrDefault(item =>
+                SimvarRequest? request = _simvarRequests.FirstOrDefault(item =>
                     item.ParamaterType == ParamaterType.LVar && $"(L:{item.Name})" == ackData.str);
                 if (request == null || request.Registered)
                 {
@@ -375,7 +391,7 @@ namespace VirtualCockpit.Lib.Sevices
             }
             else if (data.dwRequestID == (uint)CLIENTDATA_REQUEST_ID.RESULT)
             {
-                var request = _simvarRequests.FirstOrDefault(item =>
+                SimvarRequest? request = _simvarRequests.FirstOrDefault(item =>
                     item.ParamaterType == ParamaterType.LVar && (UInt16)item.DefinitionId == data.dwDefineID);
                 if (request == null)
                 {
@@ -387,7 +403,7 @@ namespace VirtualCockpit.Lib.Sevices
             }
             else if (data.dwRequestID >= (uint)CLIENTDATA_REQUEST_ID.START_LVAR)
             {
-                var request = _simvarRequests.FirstOrDefault(item =>
+                SimvarRequest? request = _simvarRequests.FirstOrDefault(item =>
                     item.ParamaterType == ParamaterType.LVar && (UInt16)item.DefinitionId == data.dwDefineID);
 
                 if (request != null)
@@ -448,7 +464,7 @@ namespace VirtualCockpit.Lib.Sevices
                 return;
             }
 
-            var data = dataWrapper.dwData[0];
+            object data = dataWrapper.dwData[0];
 
             if (request.Units == null)
             {
@@ -480,11 +496,62 @@ namespace VirtualCockpit.Lib.Sevices
 
         private void ProcessRequestEvents(SimvarRequest request)
         {
-            _cache.TryGetValue(request.Name, out var valueAsString);
-            if (valueAsString != request.ValueAsString)
+            bool sendMessage = false;
+
+            /*
+            var precisionCutoff = 10000; // TODO
+
+            var requestPrecisionCutoff = Math.Floor(request.ValueAsDecimal * precisionCutoff);
+            if (!_cacheCutoff.TryGetValue(request.Name, out var cacheCutoffData))
+            {
+                _cacheCutoff.TryAdd(request.Name, requestPrecisionCutoff);
+            }
+            else
+            {
+                if (requestPrecisionCutoff == cacheCutoffData)
+                {
+                    return;
+                }
+            }
+            */
+
+            _cache.TryGetValue(request.Name, out CacheData? cacheData);
+            if (cacheData == null)
+            {
+                _cache.TryAdd(request.Name, new CacheData
+                {
+                    ValueAsString = request.ValueAsString,
+                    ValueAsDecimal = request.ValueAsDecimal,
+                    UpdatedUtc = DateTime.UtcNow
+                });
+                sendMessage = true;
+            }
+            else
+            {
+                if (cacheData.ValueAsString == request.ValueAsString)
+                {
+                    /*
+                    if (DateTime.UtcNow.Subtract(cacheData.UpdatedUtc).TotalSeconds > 1)
+                    {
+                        sendMessage = true;
+                        cacheData.ValueAsDecimal = request.ValueAsDecimal;
+                        cacheData.ValueAsString = request.ValueAsString;
+                        cacheData.UpdatedUtc = DateTime.UtcNow;
+                    }
+                    */
+                }
+                else
+                {
+                    sendMessage = true;
+                    cacheData.ValueAsDecimal = request.ValueAsDecimal;
+                    cacheData.ValueAsString = request.ValueAsString;
+                    cacheData.UpdatedUtc = DateTime.UtcNow;
+                }
+            }
+
+            if (sendMessage)
             {
                 MessageReceivedEvent?.Invoke(request);
-                _cache[request.Name] = request.ValueAsString;
             }
         }
 
@@ -519,7 +586,7 @@ namespace VirtualCockpit.Lib.Sevices
                 return false;
             }
 
-            var request = _simvarRequests.FirstOrDefault(item => item.Name == name);
+            SimvarRequest? request = _simvarRequests.FirstOrDefault(item => item.Name == name);
             if (request == null || (request.ParamaterType == ParamaterType.SimVar && !request.Registered))
             {
                 return false;
@@ -538,9 +605,9 @@ namespace VirtualCockpit.Lib.Sevices
                     break;
 
                 case ParamaterType.KEvent:
-                    var bytes = BitConverter.GetBytes(Convert.ToInt32(value ?? 0));
-                    var param = BitConverter.ToUInt32(bytes, 0);
-                    
+                    byte[] bytes = BitConverter.GetBytes(Convert.ToInt32(value ?? 0));
+                    uint param = BitConverter.ToUInt32(bytes, 0);
+
                     _simConnect.TransmitClientEvent(
                         0,
                         (EVENT)request.DefinitionId,

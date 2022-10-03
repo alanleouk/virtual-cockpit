@@ -26,7 +26,7 @@ namespace VirtualCockpit.Lib.Models
         public string Value;
     }
 
-    public class SimvarRequest
+    public class SimvarRequest : ISimvarDefinition
     {
         public DEFINITION DefinitionId = DEFINITION.Dummy;
         public REQUEST RequestId = REQUEST.Dummy;
@@ -39,6 +39,7 @@ namespace VirtualCockpit.Lib.Models
         public string Units { get; set; }
         public bool Pending = true;
         public int Precision { get; set; }
+        public int? PrecisionCutoff { get; set; }
         public bool Registered { get; set; }
     };
 }

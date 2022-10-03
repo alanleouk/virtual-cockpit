@@ -62,7 +62,7 @@ export class A32NxEfisProperties {
 export class A32NxEfisComponent implements OnInit {
   properties = new A32NxEfisProperties();
 
-  readFrom = [
+  readFrom: string[] = [
     'KOHLSMAN SETTING MB:1',
     'AUTOPILOT FLIGHT DIRECTOR ACTIVE',
     'BTN_LS_1_FILTER_ACTIVE',
@@ -70,7 +70,7 @@ export class A32NxEfisComponent implements OnInit {
     'A32NX_EFIS_L_ND_MODE',
     'A32NX_EFIS_L_ND_RANGE',
   ];
-  writeTo = [
+  writeTo: string[] = [
     'KOHLSMAN_INC',
     'KOHLSMAN_DEC',
     'KOHLSMAN_SET',
@@ -88,13 +88,13 @@ export class A32NxEfisComponent implements OnInit {
   ngOnInit(): void {
     this.simConnect.subscribeTo(this.readFrom).subscribe((request) => this.parseSimvarRequest(request));
 
-    const simVars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
+    const simvars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
 
     this.simConnect
-      .add(simVars)
+      .add({ simvarDefinitions: simvars })
       .pipe(
         switchMap((_) => this.simConnect.connect()),
-        switchMap((_) => this.simConnect.send())
+        switchMap((_) => this.simConnect.send({ simvarKeys: this.readFrom }))
       )
       .subscribe();
   }

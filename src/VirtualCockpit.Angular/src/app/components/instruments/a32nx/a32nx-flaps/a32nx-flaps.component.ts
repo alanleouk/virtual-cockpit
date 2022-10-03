@@ -12,8 +12,8 @@ export class A32NxFlapsComponent implements OnInit {
   maxValue = 4;
   step = 1;
 
-  readFrom = ['A32NX_FLAPS_HANDLE_INDEX', 'DEBUG COMMAND'];
-  writeTo = ['A32NX_FLAPS_HANDLE_INDEX'];
+  readFrom: string[] = ['A32NX_FLAPS_HANDLE_INDEX', 'DEBUG COMMAND'];
+  writeTo: string[] = ['A32NX_FLAPS_HANDLE_INDEX'];
 
   public value: number = 0;
 
@@ -24,18 +24,13 @@ export class A32NxFlapsComponent implements OnInit {
       this.value = result.valueAsDecimal;
     });
 
+    const simvars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
+
     this.simConnect
-      .add([
-        {
-          paramaterType: ParamaterType.LVar,
-          name: 'A32NX_FLAPS_HANDLE_INDEX',
-          units: 'number',
-          precision: 0,
-        },
-      ])
+      .add({ simvarDefinitions: simvars })
       .pipe(
         switchMap((_) => this.simConnect.connect()),
-        switchMap((_) => this.simConnect.send())
+        switchMap((_) => this.simConnect.send({ simvarKeys: this.readFrom }))
       )
       .subscribe();
   }

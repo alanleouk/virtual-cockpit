@@ -104,6 +104,11 @@ import { SvgService } from './services/svg.service';
         component: A32NxThrustComponent,
       },
       {
+        path: 'instruments/a32nx/speed-brakes',
+        pathMatch: 'full',
+        component: A32NxSpeedBrakesComponent,
+      },
+      {
         path: 'developer/simvars',
         pathMatch: 'full',
         component: SimvarsComponent,

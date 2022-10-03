@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualCockpit.Socks", "VirtualCockpit.Socks\VirtualCockpit.Socks.csproj", "{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualCockpit.Lib", "VirtualCockpit.Lib\VirtualCockpit.Lib.csproj", "{96848221-79E9-4DB2-9320-D765B2AF3326}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VirtualCockpit.SocksForms", "VirtualCockpit.SocksForms\VirtualCockpit.SocksForms.csproj", "{40C83B7A-9D74-46B0-A895-2954FAF76E0C}"
@@ -17,14 +15,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}.Debug|x64.Build.0 = Debug|Any CPU
-		{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}.Release|x64.ActiveCfg = Release|Any CPU
-		{487A1B23-6678-4C9B-ADCF-39AB14BFE8BC}.Release|x64.Build.0 = Release|Any CPU
 		{96848221-79E9-4DB2-9320-D765B2AF3326}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{96848221-79E9-4DB2-9320-D765B2AF3326}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96848221-79E9-4DB2-9320-D765B2AF3326}.Debug|x64.ActiveCfg = Debug|Any CPU

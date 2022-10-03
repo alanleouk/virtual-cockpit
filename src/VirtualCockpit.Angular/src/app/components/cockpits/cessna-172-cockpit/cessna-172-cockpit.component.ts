@@ -14,28 +14,23 @@ export class A32NxCockpitProperties {
 export class Cessna172CockpitComponent implements OnInit {
   properties = new A32NxCockpitProperties();
 
-  readFrom = ['DEBUG COMMAND'];
-  writeTo = ['DEBUG COMMAND'];
+  readFrom: string[] = ['DEBUG COMMAND'];
+  writeTo: string[] = ['DEBUG COMMAND'];
 
   public value: number = 0;
 
   constructor(private simConnect: SimConnectService) {}
 
   ngOnInit(): void {
-    this.simConnect
-      .subscribeTo(this.readFrom)
-      .subscribe((request) => this.parseSimvarRequest(request));
+    this.simConnect.subscribeTo(this.readFrom).subscribe((request) => this.parseSimvarRequest(request));
 
-    const simVars = this.simConnect.allSimvars.filter(
-      (item) =>
-        this.readFrom.includes(item.name) || this.writeTo.includes(item.name)
-    );
+    const simvars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
 
     this.simConnect
-      .add(simVars)
+      .add({ simvarDefinitions: simvars })
       .pipe(
         switchMap((_) => this.simConnect.connect()),
-        switchMap((_) => this.simConnect.send())
+        switchMap((_) => this.simConnect.send({ simvarKeys: this.readFrom }))
       )
       .subscribe();
   }

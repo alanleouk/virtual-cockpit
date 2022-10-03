@@ -9,7 +9,8 @@ import { SvgService } from 'src/app/services/svg.service';
   templateUrl: './airspeed-indicator.component.html',
 })
 export class AirspeedIndicatorComponent implements OnInit, AfterViewInit {
-  readFrom = ['AIRSPEED INDICATED', 'DEBUG COMMAND'];
+  readFrom: string[] = ['AIRSPEED INDICATED'];
+  writeTo: string[] = [];
 
   public v: number = 0;
   public vString: string = '';
@@ -34,15 +35,8 @@ export class AirspeedIndicatorComponent implements OnInit, AfterViewInit {
 
   public needle: SVGLineElement;
 
-  constructor(
-    private simConnect: SimConnectService,
-    private svgService: SvgService,
-    private elementRef: ElementRef<HTMLElement>
-  ) {
-    this.needle = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'line'
-    );
+  constructor(private simConnect: SimConnectService, private svgService: SvgService, private elementRef: ElementRef<HTMLElement>) {
+    this.needle = document.createElementNS('http://www.w3.org/2000/svg', 'line');
   }
 
   ngOnInit(): void {
@@ -52,18 +46,13 @@ export class AirspeedIndicatorComponent implements OnInit, AfterViewInit {
       this.updateNeedle();
     });
 
+    const simvars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
+
     this.simConnect
-      .add([
-        {
-          paramaterType: ParamaterType.SimVar,
-          name: 'AIRSPEED INDICATED',
-          units: 'knots',
-          precision: 1,
-        },
-      ])
+      .add({ simvarDefinitions: simvars })
       .pipe(
         switchMap((_) => this.simConnect.connect()),
-        switchMap((_) => this.simConnect.send())
+        switchMap((_) => this.simConnect.send({ simvarKeys: this.readFrom }))
       )
       .subscribe();
   }
@@ -90,16 +79,11 @@ export class AirspeedIndicatorComponent implements OnInit, AfterViewInit {
       this.standardScaleFactor = standardScaleAngle / standardScaleRange;
 
       let vS0Angle = (this.vS0 - this.vMin) * this.smallScaleFactor;
-      let vS1Angle =
-        (this.vS1 - this.vS0) * this.standardScaleFactor + vS0Angle;
-      let vFEAngle =
-        (this.vFE - this.vS0) * this.standardScaleFactor + vS0Angle;
-      let vN0Angle =
-        (this.vN0 - this.vS0) * this.standardScaleFactor + vS0Angle;
-      let vNEAngle =
-        (this.vNE - this.vS0) * this.standardScaleFactor + vS0Angle;
-      let vNEsAngle =
-        (this.vNEs - this.vS0) * this.standardScaleFactor + vS0Angle;
+      let vS1Angle = (this.vS1 - this.vS0) * this.standardScaleFactor + vS0Angle;
+      let vFEAngle = (this.vFE - this.vS0) * this.standardScaleFactor + vS0Angle;
+      let vN0Angle = (this.vN0 - this.vS0) * this.standardScaleFactor + vS0Angle;
+      let vNEAngle = (this.vNE - this.vS0) * this.standardScaleFactor + vS0Angle;
+      let vNEsAngle = (this.vNEs - this.vS0) * this.standardScaleFactor + vS0Angle;
 
       this.addArc(element, '#fff', 12, 156, [vS0Angle, vFEAngle - vS0Angle]);
       this.addArc(element, '#0f0', 12, 144, [vS1Angle, vN0Angle - vS1Angle]);
@@ -113,19 +97,8 @@ export class AirspeedIndicatorComponent implements OnInit, AfterViewInit {
     }
   }
 
-  addArc(
-    element: SVGSVGElement,
-    stroke: string,
-    strokeWidth: number,
-    r: number,
-    [t1, Δ]: number[]
-  ) {
-    var path = this.svgService.createElipticArcPathInDegrees(
-      [180, 180],
-      [r, r],
-      [t1, Δ],
-      270
-    );
+  addArc(element: SVGSVGElement, stroke: string, strokeWidth: number, r: number, [t1, Δ]: number[]) {
+    var path = this.svgService.createElipticArcPathInDegrees([180, 180], [r, r], [t1, Δ], 270);
     path.setAttribute('fill', 'transparent');
     path.setAttribute('stroke', stroke);
     path.setAttribute('stroke-width', strokeWidth.toString());
@@ -133,26 +106,19 @@ export class AirspeedIndicatorComponent implements OnInit, AfterViewInit {
   }
 
   addNeedle(element: SVGSVGElement) {
-    this.needle = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'line'
-    );
+    this.needle = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     this.needle.setAttribute('x1', '180');
     this.needle.setAttribute('y1', '180');
     this.needle.setAttribute('x2', '180');
     this.needle.setAttribute('y2', '20');
-    this.needle.setAttribute(
-      'style',
-      'stroke:#fff; stroke-width:3;stroke-linecap:round'
-    );
+    this.needle.setAttribute('style', 'stroke:#fff; stroke-width:3;stroke-linecap:round');
     element.appendChild(this.needle);
   }
 
   addTicks(element: SVGSVGElement) {
     for (let value = this.vS0; value <= this.vNEs; value += this.tickMajor) {
       let smallScaleAngle = this.vS0 * this.smallScaleFactor;
-      let angle =
-        (value - this.vS0) * this.standardScaleFactor + smallScaleAngle;
+      let angle = (value - this.vS0) * this.standardScaleFactor + smallScaleAngle;
       this.addTick(element, angle, 3, 30, 130);
       this.addTickLabel(element, angle, 115, value.toString());
     }
@@ -160,67 +126,33 @@ export class AirspeedIndicatorComponent implements OnInit, AfterViewInit {
     for (let value = this.vS0; value <= this.vNEs; value += this.tickMinor) {
       if (value % this.tickMajor !== 0) {
         let smallScaleAngle = this.vS0 * this.smallScaleFactor;
-        let angle =
-          (value - this.vS0) * this.standardScaleFactor + smallScaleAngle;
+        let angle = (value - this.vS0) * this.standardScaleFactor + smallScaleAngle;
         this.addTick(element, angle, 1, 5, 130);
       }
     }
   }
 
-  addTick(
-    element: SVGSVGElement,
-    angle: number,
-    strokeWidth: number,
-    length: number,
-    distance: number
-  ) {
+  addTick(element: SVGSVGElement, angle: number, strokeWidth: number, length: number, distance: number) {
     let tick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     tick.setAttribute('x1', '180');
     tick.setAttribute('y1', '180');
     tick.setAttribute('x2', '180');
     tick.setAttribute('y2', (180 - length).toString());
-    tick.setAttribute(
-      'style',
-      'stroke:#fff; stroke-width:' +
-        strokeWidth.toString() +
-        ';stroke-linecap:round'
-    );
-    tick.setAttribute(
-      'transform',
-      'rotate(' +
-        angle.toString() +
-        ' 180 180) translate(0 -' +
-        distance.toString() +
-        ')'
-    );
+    tick.setAttribute('style', 'stroke:#fff; stroke-width:' + strokeWidth.toString() + ';stroke-linecap:round');
+    tick.setAttribute('transform', 'rotate(' + angle.toString() + ' 180 180) translate(0 -' + distance.toString() + ')');
 
     element.appendChild(tick);
   }
 
-  addTickLabel(
-    element: SVGSVGElement,
-    angle: number,
-    distance: number,
-    value: string
-  ) {
-    let tickLabel = document.createElementNS(
-      'http://www.w3.org/2000/svg',
-      'text'
-    );
+  addTickLabel(element: SVGSVGElement, angle: number, distance: number, value: string) {
+    let tickLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     tickLabel.innerHTML = value;
     tickLabel.setAttribute('x', '180');
     tickLabel.setAttribute('y', '180');
     tickLabel.setAttribute('dominant-baseline', 'middle');
     tickLabel.setAttribute('text-anchor', 'middle');
     tickLabel.setAttribute('class', 'label');
-    tickLabel.setAttribute(
-      'transform',
-      'rotate(' +
-        angle.toString() +
-        ' 180 180) translate(0 -' +
-        distance.toString() +
-        ')'
-    );
+    tickLabel.setAttribute('transform', 'rotate(' + angle.toString() + ' 180 180) translate(0 -' + distance.toString() + ')');
 
     element.appendChild(tickLabel);
   }
@@ -262,9 +194,6 @@ export class AirspeedIndicatorComponent implements OnInit, AfterViewInit {
       angle = (this.v - this.vS0) * this.standardScaleFactor + smallScaleAngle;
     }
 
-    this.needle.setAttribute(
-      'transform',
-      'rotate(' + angle.toString() + ' 180 180)'
-    );
+    this.needle.setAttribute('transform', 'rotate(' + angle.toString() + ' 180 180)');
   }
 }

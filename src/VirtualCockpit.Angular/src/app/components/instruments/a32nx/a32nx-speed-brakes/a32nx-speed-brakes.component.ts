@@ -8,14 +8,14 @@ const MAX_VALUE = 16384;
 export class A32NxSpeedBrakesProperties {
   public maxValue: number;
   public value: number;
-  public loadedValue: boolean;
+  public valueLoaded: boolean;
   public rangeValue: number;
   public armed: boolean;
 
   constructor() {
     this.maxValue = MAX_VALUE;
     this.value = 0;
-    this.loadedValue = false;
+    this.valueLoaded = false;
     this.rangeValue = MAX_VALUE;
     this.armed = false;
   }
@@ -28,8 +28,8 @@ export class A32NxSpeedBrakesProperties {
 export class A32NxSpeedBrakesComponent implements OnInit {
   properties = new A32NxSpeedBrakesProperties();
 
-  readFrom = ['A32NX_SPOILERS_HANDLE_POSITION', 'A32NX_SPOILERS_ARMED'];
-  writeTo = ['SPOILERS_SET', 'SPOILERS_ARM_TOGGLE'];
+  readFrom: string[] = ['A32NX_SPOILERS_HANDLE_POSITION', 'A32NX_SPOILERS_ARMED'];
+  writeTo: string[] = ['SPOILERS_SET', 'SPOILERS_ARM_TOGGLE'];
 
   private rangeValueChangedSubject = new BehaviorSubject<number>(0);
 
@@ -37,7 +37,7 @@ export class A32NxSpeedBrakesComponent implements OnInit {
 
   ngOnInit(): void {
     this.rangeValueChangedSubject.pipe(distinctUntilChanged(), debounceTime(100)).subscribe((rangeValue) => {
-      if (!this.properties.loadedValue) {
+      if (!this.properties.valueLoaded) {
         return;
       }
       this.setValue(this.properties.maxValue - rangeValue);
@@ -45,20 +45,23 @@ export class A32NxSpeedBrakesComponent implements OnInit {
 
     this.simConnect.subscribeTo(this.readFrom).subscribe((request) => this.parseSimvarRequest(request));
 
-    const simVars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
+    const simvars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
 
-    this.simConnect.add(simVars).pipe(
-      switchMap((_) => this.simConnect.connect()),
-      switchMap((_) => this.simConnect.send())
-    );
+    this.simConnect
+      .add({ simvarDefinitions: simvars })
+      .pipe(
+        switchMap((_) => this.simConnect.connect()),
+        switchMap((_) => this.simConnect.send({ simvarKeys: this.readFrom }))
+      )
+      .subscribe();
   }
 
   parseSimvarRequest(request: SimvarRequest): void {
     switch (request.name) {
       case 'A32NX_SPOILERS_HANDLE_POSITION':
-        this.properties.loadedValue = true;
         this.properties.value = request.valueAsDecimal * this.properties.maxValue;
         this.properties.rangeValue = this.properties.maxValue - this.properties.value;
+        this.properties.valueLoaded = true;
         break;
       case 'A32NX_SPOILERS_ARMED':
         this.properties.armed = request.valueAsDecimal > 0;
@@ -67,14 +70,12 @@ export class A32NxSpeedBrakesComponent implements OnInit {
   }
 
   public updateValue(value: number) {
-    if (!this.properties.loadedValue) {
-      return;
-    }
-    this.rangeValueChangedSubject.next(this.properties.maxValue - value);
+    const rangeValue = this.properties.maxValue - value;
+    this.rangeValueChanged(rangeValue);
   }
 
   public rangeValueChanged(rangeValue: number) {
-    if (!this.properties.loadedValue) {
+    if (!this.properties.valueLoaded) {
       return;
     }
     this.rangeValueChangedSubject.next(rangeValue);

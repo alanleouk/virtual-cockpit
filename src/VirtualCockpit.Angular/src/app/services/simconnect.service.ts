@@ -4,6 +4,7 @@ import { filter, Observable, Subject } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { AddRequest } from '../models/add-request';
 import { ParamaterType } from '../models/paramater-type';
+import { SendRequest } from '../models/send-request';
 import { Simvar } from '../models/simvar';
 import { SimvarRequest } from '../models/simvar-request';
 import { ConfigService } from './config.service';
@@ -755,15 +756,15 @@ export class SimConnectService {
     return this.http.post(this.config.current.network.serviceUrl + '/reset', {});
   }
 
-  add(requests: AddRequest[]): Observable<any> {
-    return this.http.post(this.config.current.network.serviceUrl + '/add', requests);
+  add(request: AddRequest): Observable<any> {
+    return this.http.post(this.config.current.network.serviceUrl + '/add', request);
   }
 
   addAll(): Observable<any> {
-    return this.http.post(this.config.current.network.serviceUrl + '/add', this.allSimvars);
+    return this.http.post(this.config.current.network.serviceUrl + '/add', { simvarDefinitions: this.allSimvars });
   }
 
-  send(): Observable<any> {
-    return this.http.post(this.config.current.network.serviceUrl + '/send', {});
+  send(request: SendRequest): Observable<any> {
+    return this.http.post(this.config.current.network.serviceUrl + '/send', request);
   }
 }

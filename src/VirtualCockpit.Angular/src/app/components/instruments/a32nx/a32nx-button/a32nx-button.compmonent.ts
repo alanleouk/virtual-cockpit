@@ -15,10 +15,10 @@ export class A32NxButtonComponent implements OnInit {
   label = 'BTN';
 
   @Input()
-  readFrom = ['DEBUG COMMAND'];
+  readFrom: string[] = ['DEBUG COMMAND'];
 
   @Input()
-  writeTo = ['DEBUG COMMAND'];
+  writeTo: string[] = ['DEBUG COMMAND'];
 
   public properties: ValueProperties = defaultProperty;
   public value: number = 0;
@@ -29,13 +29,13 @@ export class A32NxButtonComponent implements OnInit {
   ngOnInit(): void {
     this.simConnect.subscribeTo(this.readFrom).subscribe((request) => this.parseSimvarRequest(request));
 
-    const simVars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
+    const simvars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
 
     this.simConnect
-      .add(simVars)
+      .add({ simvarDefinitions: simvars })
       .pipe(
         switchMap((_) => this.simConnect.connect()),
-        switchMap((_) => this.simConnect.send())
+        switchMap((_) => this.simConnect.send({ simvarKeys: this.readFrom }))
       )
       .subscribe();
 

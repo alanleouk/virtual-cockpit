@@ -36,8 +36,8 @@ export class A32NxAutobrakeGearProperties {
 export class A32NxAutobrakeGearComponent implements OnInit {
   properties = new A32NxAutobrakeGearProperties();
 
-  readFrom = ['GEAR HANDLE POSITION', 'GEAR LEFT POSITION', 'GEAR CENTER POSITION', 'GEAR RIGHT POSITION', 'A32NX_AUTOBRAKES_ARMED_MODE'];
-  writeTo = ['GEAR_UP', 'GEAR_DOWN', 'GEAR HANDLE POSITION', 'A32NX_AUTOBRAKES_ARMED_MODE_SET'];
+  readFrom: string[] = ['GEAR HANDLE POSITION', 'GEAR LEFT POSITION', 'GEAR CENTER POSITION', 'GEAR RIGHT POSITION', 'A32NX_AUTOBRAKES_ARMED_MODE'];
+  writeTo: string[] = ['GEAR_UP', 'GEAR_DOWN', 'GEAR HANDLE POSITION', 'A32NX_AUTOBRAKES_ARMED_MODE_SET'];
 
   public value: number = 0;
 
@@ -46,13 +46,13 @@ export class A32NxAutobrakeGearComponent implements OnInit {
   ngOnInit(): void {
     this.simConnect.subscribeTo(this.readFrom).subscribe((request) => this.parseSimvarRequest(request));
 
-    const simVars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
+    const simvars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
 
     this.simConnect
-      .add(simVars)
+      .add({ simvarDefinitions: simvars })
       .pipe(
         switchMap((_) => this.simConnect.connect()),
-        switchMap((_) => this.simConnect.send())
+        switchMap((_) => this.simConnect.send({ simvarKeys: this.readFrom }))
       )
       .subscribe();
   }
@@ -69,7 +69,6 @@ export class A32NxAutobrakeGearComponent implements OnInit {
         }
         break;
       case 'GEAR LEFT POSITION':
-        console.log(request.valueAsDecimal);
         if (request.valueAsDecimal < 0.5) {
           this.properties.ldg1Color = 'default';
         } else if (request.valueAsDecimal < 1) {

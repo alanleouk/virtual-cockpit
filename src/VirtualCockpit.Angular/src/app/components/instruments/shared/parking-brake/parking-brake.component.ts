@@ -8,8 +8,8 @@ import { SimConnectService } from 'src/app/services/simconnect.service';
   templateUrl: './parking-brake.component.html',
 })
 export class ParkingBrakeComponent implements OnInit {
-  readFrom = ['A32NX_PARK_BRAKE_LEVER_POS'];
-  writeTo = [];
+  readFrom: string[] = ['A32NX_PARK_BRAKE_LEVER_POS'];
+  writeTo: string[] = [];
 
   public value: number = 0;
 
@@ -20,18 +20,13 @@ export class ParkingBrakeComponent implements OnInit {
       this.value = result.valueAsDecimal;
     });
 
+    const simvars = this.simConnect.allSimvars.filter((item) => this.readFrom.includes(item.name) || this.writeTo.includes(item.name));
+
     this.simConnect
-      .add([
-        {
-          paramaterType: ParamaterType.LVar,
-          name: 'A32NX_PARK_BRAKE_LEVER_POS',
-          units: 'number',
-          precision: 0,
-        },
-      ])
+      .add({ simvarDefinitions: simvars })
       .pipe(
         switchMap((_) => this.simConnect.connect()),
-        switchMap((_) => this.simConnect.send())
+        switchMap((_) => this.simConnect.send({ simvarKeys: this.readFrom }))
       )
       .subscribe();
   }

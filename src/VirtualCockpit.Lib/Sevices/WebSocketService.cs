@@ -8,12 +8,12 @@ namespace VirtualCockpit.Lib.Sevices
     public class WebSocketService
     {
         private readonly SimConnectService _simConnectService;
-        
+
         public WebSocketService(SimConnectService simConnectService)
         {
             _simConnectService = simConnectService;
         }
-        
+
         private readonly JsonSerializerOptions _jsonSerializerOptions = new()
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -26,11 +26,11 @@ namespace VirtualCockpit.Lib.Sevices
             {
                 _simConnectService.MessageReceivedEvent += async request =>
                 {
-                    var responseString = JsonSerializer.Serialize(request, _jsonSerializerOptions);
+                    string responseString = JsonSerializer.Serialize(request, _jsonSerializerOptions);
                     await webSocket.SendAsync(Encoding.ASCII.GetBytes(responseString), WebSocketMessageType.Text, true,
                         CancellationToken.None);
                 };
-                
+
                 while (true)
                 {
                     // var response = new { TimeOfDay = DateTime.UtcNow };
@@ -38,7 +38,7 @@ namespace VirtualCockpit.Lib.Sevices
                     // await webSocket.SendAsync(Encoding.ASCII.GetBytes(responseString), WebSocketMessageType.Text, true, CancellationToken.None);
                     await Task.Delay(1000);
                 }
-                
+
                 return HttpStatusCode.OK;
             }
             catch (Exception e)
