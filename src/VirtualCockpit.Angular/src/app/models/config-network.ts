@@ -3,7 +3,7 @@ export class ConfigNetwork {
   wsUrl: string;
 
   constructor() {
-    this.serviceUrl = 'https://vcockpit-host.osz.one';
-    this.wsUrl = 'wss://vcockpit-host.osz.one/ws';
+    this.serviceUrl = 'https://vcockpit-local.osz.one:4445';
+    this.wsUrl = 'wss://vcockpit-local.osz.one:4445/ws';
   }
 }

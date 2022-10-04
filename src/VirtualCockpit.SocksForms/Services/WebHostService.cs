@@ -29,15 +29,17 @@ namespace VirtualCockpit.SocksForms.Services
             // Kesterel
             _builder.WebHost.ConfigureKestrel((context, serverOptions) =>
             {
-                IConfigurationSection kestrelSection = context.Configuration.GetSection("Kestrel");
+                var kestrelSection = context.Configuration.GetSection("KestrelHost");
 
                 serverOptions.Configure(kestrelSection)
                     .Endpoint("Https", listenOptions =>
                     {
-                        /*
-                        Debug.Assert(listenOptions.ListenOptions.IPEndPoint != null,
-                            "listenOptions.ListenOptioCertificatens.IPEndPoint != null");
-                        listenOptions.ListenOptions.IPEndPoint.Address = IPAddress.Parse("127.0.0.20");*/
+                        if (listenOptions.ListenOptions.IPEndPoint != null)
+                        {
+                            // listenOptions.ListenOptions.IPEndPoint.Address = IPAddress.Parse("127.0.0.20");
+                            listenOptions.ListenOptions.IPEndPoint.Address = IPAddress.Any;
+                            listenOptions.ListenOptions.IPEndPoint.Port = 4445;
+                        }
                     });
             });
 
@@ -48,8 +50,10 @@ namespace VirtualCockpit.SocksForms.Services
                     builder =>
                     {
                         builder
-                            .WithOrigins("http://localhost:4200", "https://vcockpit-local.osz.one",
-                                "https://vcockpit.osz.one")
+                            .WithOrigins(
+                                "http://localhost:4200",
+                                "https://vcockpit-local.osz.one", "https://vcockpit-local.osz.one:4444",
+                                "https://vcockpit.osz.one", "https://vcockpit.osz.one:4444")
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
@@ -112,7 +116,7 @@ namespace VirtualCockpit.SocksForms.Services
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
-                    using (System.Net.WebSockets.WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync())
+                    using (var webSocket = await context.WebSockets.AcceptWebSocketAsync())
                     {
                         await webSocketService.Handle(webSocket);
                     }
@@ -133,7 +137,7 @@ namespace VirtualCockpit.SocksForms.Services
 
         public void SendStatusMessage()
         {
-            string message = "Listening on: " + String.Join(';', _app.Urls.Select(item => item).ToList());
+            var message = "Listening on: " + String.Join(';', _app.Urls.Select(item => item).ToList());
             LoggingEvent?.Invoke(message);
         }
     }

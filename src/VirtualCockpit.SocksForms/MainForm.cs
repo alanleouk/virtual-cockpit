@@ -9,11 +9,13 @@ public partial class MainForm : Form
     private readonly SimConnectService _simConnectService;
     private readonly CancellationTokenSource _cts;
     private readonly WebHostService _webHost;
+    private readonly WepAppService? _webApp;
 
-    public MainForm(WebHostService webHost, CancellationTokenSource cts)
+    public MainForm(WebHostService webHost, WepAppService? webApp, CancellationTokenSource cts)
     {
         _simConnectService = webHost.SimConnectService;
         _webHost = webHost;
+        _webApp = webApp;
         _cts = cts;
 
         InitializeComponent();
@@ -32,6 +34,12 @@ public partial class MainForm : Form
         //
         _webHost.LoggingEvent += SimConnectServiceOnLoggingEvent;
         _webHost.SendStatusMessage();
+        //
+        if (_webApp != null)
+        {
+            _webApp.LoggingEvent += SimConnectServiceOnLoggingEvent;
+            _webApp.SendStatusMessage();
+        }
     }
 
     private void SimConnectServiceOnLoggingEvent(string message)
@@ -49,7 +57,7 @@ public partial class MainForm : Form
 
     private void SimConnectServiceOnMessageReceivedEvent(SimvarRequest request)
     {
-        string value = request.Name + ": " + request.ValueAsString + " / " + request.ValueAsDecimal;
+        var value = request.Name + ": " + request.ValueAsString + " / " + request.ValueAsDecimal;
         outputTextbox.Invoke(() => outputTextbox.AppendText(value + "\r\n"));
     }
 
@@ -65,7 +73,7 @@ public partial class MainForm : Form
 
     private void cmdSend_Click(object sender, EventArgs e)
     {
-        decimal.TryParse(valueTextbox.Text, out decimal valueAsDecimal);
+        decimal.TryParse(valueTextbox.Text, out var valueAsDecimal);
 
         SimvarRequest request = new()
         {

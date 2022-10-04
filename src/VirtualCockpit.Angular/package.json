@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host vcockpit-local.osz.one --port 443 --ssl true --ssl-key ./osz.one.key --ssl-cert ./osz.one.crt",
+    "start": "ng serve --host vcockpit-local.osz.one --port 4444 --ssl true --ssl-key ./osz.one.key --ssl-cert ./osz.one.crt",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
